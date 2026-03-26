@@ -1,0 +1,53 @@
+.container {
+  width: 50%;
+  margin: auto;
+  margin-top: 100px;
+  padding-bottom: 100px;
+  padding-top: 10px;
+  border-radius: 13px;
+  background: #ffffff;
+  box-shadow:  20px 20px 56px #b3b3b3,
+               -20px -20px 56px #ffffff;
+
+
+
+}
+.inputBox {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  position: relative;
+}
+.inputBox span > svg {
+  font-size: 28px;
+  position: absolute;
+  z-index: 999;
+  top: 16px;
+  color: rgb(89, 164, 255);
+}
+.input {
+  padding: 5px 50px;
+  width: 60%;
+  background: rgb(244, 244, 244);
+  font-size: 20px;
+  border-radius: 5px;
+}
+.input:active {
+  border: 0;
+}
+
+
+@media only screen and (max-width:768px){
+    .container{
+        width: 100%;
+        margin-top: 50px;
+    }
+    .input{
+        width: 100%;
+        font-size: 16px;
+    }
+    .inputBox span > svg{
+        font-size: 26px;
+    }
+}

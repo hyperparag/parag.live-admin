@@ -1,0 +1,49 @@
+.imageContainer{
+    width: 90%;
+   
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+}
+.imageContainer img{
+    width: auto;
+        height: auto;
+    
+        max-height: 300px;
+    margin-left: 10px;
+}
+.cityList{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.postImage{
+    width: 240px;
+    margin: 2px;
+}
+
+@media only screen and (max-width:768px) {
+    .imageContainer{
+        flex-direction: column;
+        width: 90%;
+       
+    }
+    .imageContainer img{
+        width: 150px;
+        height: 100px;
+        margin-left: 10px;
+    }
+
+    .postImage{
+        width: 150px;
+        margin: 2px;
+    }
+    
+
+
+    .cityList{
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+    }
+}

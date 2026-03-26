@@ -1,0 +1,162 @@
+.banner{
+    background:  #019188;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    height: 450px;
+    width: 98%;
+    border-radius: 20px;
+    margin: auto;
+}
+.wrappersearchinput{
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.input{
+    width: 100%;
+    padding: 10px 10px;
+    border-radius: 10px;
+    color: black;
+    background: white;
+
+}
+.searchicon{
+    position: absolute;
+    color: black;
+    right: 12px;
+}
+.topBanner{
+    width: 60%;
+}
+.firstColumn{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  
+}
+.topCountry{
+    border-radius: 20px;
+    color: black;
+    width: 35%;
+    background: white;
+    font-weight: 500;
+}
+.countryList{
+    display: grid;
+    grid-template-columns: repeat(4 , 1fr);
+    font-size: 16px;
+    grid-gap: 5px;
+}
+
+.countryList li{
+    position: relative;
+    margin-left: 21px;
+}
+.countryList li:before {
+    content: ">";
+    left: -21px;
+    position: absolute;
+    top: 0;
+}
+
+.topCountryList{
+    padding: 10px;
+    display: grid;
+    grid-template-columns: repeat(3 , 1fr);
+    font-size: 16px;
+    color:#05baf1 ;
+}
+.topCountryList li{
+    position: relative;
+    margin-left: 21px;
+}
+.topCountryList li:before {
+    content: ">";
+    left: -21px;
+    position: absolute;
+    top: 0;
+}
+
+@media only screen and (max-width:998px) {
+    .banner{
+        background:  #019188;
+        color: white;
+        display: flex;
+        justify-content: space-between;
+        flex-direction: column;
+        padding: 20px;
+        height: 100%;
+    }
+    .topBanner{
+        width: 100%;
+    }
+    .topCountry{
+        margin-top: 20px;
+        color: black;
+        width: 100%;
+        background: white;
+    }
+    .input{
+        width: 100%;
+        padding: 2px 2px;
+        border-radius: 5px;
+        color: black;
+    
+    }
+    .countryList{
+        display: grid;
+
+        grid-template-columns: repeat(2, 1fr);
+        font-size: 15px;
+    }
+    .topCountryList{
+        display: grid;
+
+        grid-template-columns: repeat(2, 1fr);
+        font-size: 15px;
+    }
+}
+
+
+@media only screen and (max-width:768px) {
+    .banner{
+        background:  #019188;
+        color: white;
+        display: flex;
+        justify-content: space-between;
+        flex-direction: column;
+        padding: 20px;
+        height: 100%;
+    }
+    .topBanner{
+        width: 100%;
+    }
+    .topCountry{
+        margin-top: 20px;
+        color: black;
+        width: 100%;
+        background: white;
+    }
+    .input{
+        width: 100%;
+        padding: 2px 2px;
+        border-radius: 5px;
+        color: black;
+    
+    }
+    .countryList{
+        display: grid;
+
+        grid-template-columns: repeat(2, 1fr);
+        font-size: 15px;
+    }
+    .topCountryList{
+        display: grid;
+
+        grid-template-columns: repeat(2, 1fr);
+        font-size: 15px;
+    }
+}

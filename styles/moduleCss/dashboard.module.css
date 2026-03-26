@@ -1,0 +1,55 @@
+.creditsButton{
+    font-weight: 700;
+    padding: 5px;
+    color: black;
+    border: 4px solid rgb(23, 148, 23);
+    font-size: 15px;
+}
+.adsTotalButton{
+    margin-left: 10px;
+    font-weight: 700;
+    padding: 5px;
+    color: black;
+    border: 4px solid rgb(1, 195, 230);
+    font-size: 15px;
+}
+.menu{
+    border: 1px solid rgb(221, 221, 221);
+    margin-top: 5px;
+}
+.menu:hover{
+    border: 1px solid rgb(255, 34, 34);
+}
+.menu:active{
+    background: red !important;
+}
+.tableSM{
+    display: none;
+}
+.tableLG{
+    width: 100%;
+}
+
+.smalltable{
+   
+    width: 100%;
+}
+.tableimage{
+    width: 100px;
+    height: 70px;
+}
+
+.smTableImage{
+    width: 60px !important;
+}
+
+
+
+@media only screen and (max-width:768px){
+    .tableLG{
+        display: none;
+    }
+    .tableSM{
+        display: block;
+    }
+}

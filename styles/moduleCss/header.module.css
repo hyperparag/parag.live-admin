@@ -1,0 +1,130 @@
+.header{
+    background: rgb(255, 255, 255);
+    box-shadow: 5px 2px #f1f1f193;
+    height: 80px;
+    width: 100%;
+    margin-top: 20px;
+    margin: auto;
+    display: flex;
+    padding-left: 20px;
+    padding-right: 20px;
+    justify-content: space-between;
+    color: #000;
+    
+}
+.brandimage{
+    width: 200px;
+}
+.headerContainer{
+    width: 95%;
+    margin: auto;
+    display: flex;
+    justify-content: flex-start;
+}
+.menu{
+    width: 50%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    font-size: 16px;
+}
+
+.menu .item:not(:last-child) {
+    border-right: 1px solid #d4d6d9;
+    margin-right: 15px;
+ padding-right: 15px; 
+}
+.otherMenusUl .itemLast:not(:last-child) {
+    border-right: 1px solid #d4d6d9;
+    margin-right: 15px;
+ padding-right: 15px; 
+}
+.menu .items:not(:last-child) {
+    border-right: 1px solid #d4d6d9;
+    margin-right: 15px;
+ padding-right: 15px; 
+}
+.menu .itemd:not(:last-child) {
+    border-right: 1px solid #d4d6d9;
+    margin-right: 15px;
+ padding-right: 15px; 
+}
+.items , .dropdownMenu{
+    display: none;
+}
+.itemLast{
+    font-size: 16px;
+}
+
+.otherMenusUl{
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.postMenu{
+    width: 100px;
+    background: #05baf1;
+    padding: 5px;
+    border-radius: 10px;
+    color: white;
+    font-weight: 500;
+}
+.otherMenusUl .postMenu:not(:last-child) {
+    border-right: 1px solid #d4d6d9;
+    margin-right: 15px;
+ padding-right: 15px; 
+}
+
+.postMenus{
+    background: #05baf1;
+    border-radius: 10px;
+    color: white;
+    font-size: 15px;
+    font-weight: 500;
+}
+
+@media only screen and (max-width:998px){
+    .menu{
+        width: 60%;
+        font-size: 9px;
+        justify-content: space-between;
+    }
+}
+@media only screen and (max-width:768px) { 
+    .header{
+        height: 70px;
+        padding-left: 10px;
+    }
+    .brandimage{
+        width: 120px;
+    }
+    .headerContainer{
+        
+        flex-direction: column;
+    }
+
+    .menu{
+        width: 60%;
+        font-size: 9px;
+        justify-content: space-between;
+    }
+    .items , .dropdownMenu{
+        font-size: 8px;
+        display: block;
+        margin-left: 2px;
+    }
+    .itemd {
+        display: none;
+    }
+    .menu .item:not(:last-child) {
+   
+        margin-right: 0;
+
+    }
+
+    .otherMenusUl{
+        display: none;
+    }
+}

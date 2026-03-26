@@ -1,0 +1,21 @@
+.logo {
+  font-size: 40px;
+  font-weight: 900;
+  background: -webkit-linear-gradient(black, white);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.ul {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  color: white;
+  font-weight: bolder;
+  text-transform: uppercase;
+}
+
+.form {
+  display: flex;
+  align-items: center;
+}

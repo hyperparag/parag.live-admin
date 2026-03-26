@@ -1,0 +1,130 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+}
+
+.uppercase {
+  font-size: 25px !important;
+}
+
+@media only screen and (max-width: 768px) {
+  .uppercase {
+    font-size: 15px !important;
+    margin-left: 5px;
+  }
+}
+.ant-table-body {
+  overflow-y: hidden !important;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: rgb(4, 118, 153);
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: rgb(0, 177, 24);
+}
+.active {
+  background: rgb(0, 0, 0) !important;
+  color: rgb(255, 255, 255) !important;
+}
+
+.ant-layout-content {
+  padding: 10px !important;
+}
+.ant-menu-item {
+  background: rgb(243, 242, 242);
+  padding: 0 !important;
+}
+.ant-menu-item {
+  margin-top: 20px !important;
+  display: flex !important;
+  align-items: center !important;
+  padding-left: 24px !important;
+}
+.ant-menu-title-content:active {
+  background: none;
+}
+.ant-menu-submenu-title {
+  background: rgb(243, 242, 242);
+  margin-top: 20px !important;
+}
+.ant-menu-title-content {
+  padding: 0 !important;
+}
+.ant-menu-sub > li {
+  margin-top: 5px !important;
+  margin-left: 25px !important;
+  width: 175px !important;
+}
+.ant-menu-item:hover {
+  background: rgb(104, 232, 255) !important;
+}
+.ant-menu-submenu-title:hover {
+  background: rgb(255, 125, 125) !important;
+}
+.ant-input-search-button {
+  background-color: #05baf1;
+}
+
+.ant-input-search-button > span > svg {
+  font-size: 25px !important;
+}
+.trigger {
+  padding: 0 24px;
+  font-size: 18px;
+  line-height: 64px;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.trigger:hover {
+  color: #1890ff;
+}
+
+.logo {
+  height: 32px;
+  margin: 16px;
+  color: red;
+  background: rgb(255, 255, 255);
+}
+.ant-upload-list-item-container {
+  width: 150px !important;
+  height: 150px !important;
+}
+.ant-btn-primary {
+  background-color: #ff1616;
+  border-radius: 12px;
+  color: #fff;
+  cursor: pointer;
+  font-weight: bold;
+
+  text-align: center;
+  transition: 200ms;
+
+  box-sizing: border-box;
+  border: 0;
+  font-size: 16px;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+/* https://paraglive-backend.vercel.app/api/ */
+
+.icons {
+  color: rgb(28, 187, 235) !important;
+}
+.ant-layout-sider {
+  background: rgb(255, 255, 255) !important;
+}

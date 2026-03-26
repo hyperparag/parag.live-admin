@@ -1,0 +1,91 @@
+.menu{
+    border: 1px solid rgb(221, 221, 221);
+    margin-top: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    color: black;
+    
+}
+.menu:hover{
+    border: 1px solid rgb(255, 34, 34);
+
+}
+.menu:hover svg{
+    color: rgb(10, 203, 43);
+}
+.menu:active{
+    background: rgb(255, 255, 255);
+}
+.profileMenu{
+    border: 1px solid rgb(221, 221, 221);
+    margin-top: auto;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    color: black;
+    margin-bottom: 30%;
+
+}
+.profileMenu:hover{
+    border: 1px solid rgb(255, 34, 34);
+
+}
+.profileMenu:hover svg{
+    color: rgb(10, 203, 43);
+}
+.profileMenu:active{
+    background: rgb(255, 255, 255);
+}
+
+
+
+.avater{
+    width: 50px !important;
+}
+
+.editableInputs{
+    border: 1px solid rgb(255, 102, 14);
+    padding: 5px;
+    font-weight: 400;
+    font-size: 14px;
+    color: black;
+    border-radius: 5px;
+}
+
+.updateButton {
+   
+    margin-top: 20px;
+    width: 50%;
+    height: 40px;
+    background-color: #FF1616;
+    border-radius: 12px;
+    color: #fff;
+    cursor: pointer;
+    font-weight: bold;
+    text-align: center;
+    transition: 200ms;
+    box-sizing: border-box;
+    border: 0;
+    font-size: 12px;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+  }
+  
+  .updateButton:not(:disabled):hover,
+  .updateButton:not(:disabled):focus {
+    outline: 0;
+    background: #03f417;
+    box-shadow: 0 0 0 2px rgba(0,0,0,.2), 0 10px 8px 0 rgba(0,0,0,.15);
+  }
+  
+  .updateButton:disabled {
+    filter: saturate(0.2) opacity(0.5);
+    -webkit-filter: saturate(0.2) opacity(0.5);
+    cursor: not-allowed;
+  }
+
+  .peer:hover svg{
+    color: rgb(10, 203, 43);
+  }
