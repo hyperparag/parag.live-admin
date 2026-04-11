@@ -75,7 +75,7 @@ const Login = () => {
           className="m-auto pb-5"
           src="/logo.png"
         />*/}
-        <p className='text-4xl text-red-600'>SKIP THE GAMES</p>
+        <p className='text-4xl text-red-600'>parag</p>
         <h1 className='flex justify-center text-2xl font-bold mb-5'>Login</h1>
 
         <form onSubmit={login}>
