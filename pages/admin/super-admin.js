@@ -353,7 +353,7 @@ const SuperAdmin = () => {
         <Sider trigger={null} collapsible collapsed={collapsed}>
           <div className='logo'>
             {collapsed ? (
-              <h1 className='text-2xl'>STG</h1>
+              <h1 className='text-2xl'>PRG</h1>
             ) : (
               <h1 className='text-2xl'>PARAG</h1>
             )}

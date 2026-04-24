@@ -122,13 +122,13 @@ const AddBlog = () => {
     } else {
       const formData = new FormData();
       formData.append("images", fileList[0].originFileObj);
-      await fetch("https://paraglive-backend.vercel.app/api/files/files", {
+      await fetch("https://paraglive-backend.vercel.app/api/files2/files", {
         method: "POST",
         body: formData,
       })
         .then((res) => res.json())
         .then((result) => {
-          data["image"] = result.url;
+          data["image"] = result?.[0];
         });
     }
 
