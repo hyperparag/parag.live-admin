@@ -96,16 +96,16 @@ const AddBlog = () => {
     } else {
       setError(false);
     }
-    const isLt2M = file.size / 1024 / 1024 < 2;
-    if (!isLt2M) {
-      message.error("Image must smaller than 2MB!");
+    const isLt50KB = file.size / 1024 < 50;
+    if (!isLt50KB) {
+      message.error("Image must be smaller than 50KB!");
       setError(true);
       return;
     } else {
       setError(false);
     }
 
-    return isJpgOrPng && isLt2M;
+    return isJpgOrPng && isLt50KB;
   };
 
   const dispatch = (e) => {
