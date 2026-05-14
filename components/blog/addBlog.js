@@ -135,14 +135,21 @@ const AddBlog = () => {
     setIsLoadingimgS(false);
     data["writer"] = user?.firstName + user?.lastName;
 
-    await axios
-      .post("https://paraglive-backend.vercel.app/api/blogs", data, {
+    await Promise.all([
+      axios.post("https://paraglive-backend.vercel.app/api/blogs", data, {
         headers: {
           "content-type": "application/json",
           authorization: `Bearer ${usersStringfy}`,
         },
-      })
-      .then((response) => {
+      }),
+      axios.post("https://skipthegame-live-backend.vercel.app/api/blogs", data, {
+        headers: {
+          "content-type": "application/json",
+          authorization: `Bearer ${usersStringfy}`,
+        },
+      }),
+    ])
+      .then(([response]) => {
         setIsLoadingimgS(false);
         if (response.data.status == "success") {
           Swal.fire({
