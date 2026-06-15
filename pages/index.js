@@ -31,7 +31,7 @@ const Home = () => {
     const data = { ...state, isLoading: true };
 
     await axios
-      .post("https://paraglive-backend.vercel.app/api/users/login", data)
+      .post("http://localhost:5000/api/users/login", data)
 
       .then((response) => {
         setIsLoading(false);

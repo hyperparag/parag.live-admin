@@ -25,12 +25,9 @@ const Links = () => {
 
   async function getUser() {
     try {
-      const response = await axios.get(
-        `https://paraglive-backend.vercel.app/api/links`,
-        {
-          method: "GET",
-        },
-      );
+      const response = await axios.get(`http://localhost:5000/api/links`, {
+        method: "GET",
+      });
       const data = response.data.links;
 
       setState({ ...state, links: data });
@@ -58,7 +55,7 @@ const Links = () => {
       if (result.isConfirmed) {
         axios
           .patch(
-            `https://paraglive-backend.vercel.app/api/links/69da879bf82392d9999f40c5`,
+            `http://localhost:5000/api/links/69da879bf82392d9999f40c5`,
             state,
             {
               headers: {

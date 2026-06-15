@@ -115,7 +115,7 @@ const ApprovedPosts = ({ setNewPost, datas }) => {
 
   async function getPosts() {
     fetch(
-      `https://paraglive-backend.vercel.app/api/products?page=${current}&cat=${postCategory}&subCat=${postSubCategory}&searchText=${search}&date=${date}`,
+      `http://localhost:5000/api/products?page=${current}&cat=${postCategory}&subCat=${postSubCategory}&searchText=${search}&date=${date}`,
       {
         method: "GET",
       },
@@ -150,7 +150,7 @@ const ApprovedPosts = ({ setNewPost, datas }) => {
     }).then((result) => {
       if (result.isConfirmed) {
         axios
-          .delete(`https://paraglive-backend.vercel.app/api/products/${id}`, {
+          .delete(`http://localhost:5000/api/products/${id}`, {
             headers: {
               authorization: `Bearer ${usersStringfy}`,
             },
@@ -192,10 +192,7 @@ const ApprovedPosts = ({ setNewPost, datas }) => {
     }).then((result) => {
       if (result.isConfirmed) {
         axios
-          .post(
-            `https://paraglive-backend.vercel.app/api/products/deleteMany`,
-            ids,
-          )
+          .post(`http://localhost:5000/api/products/deleteMany`, ids)
           .then((response) => {
             if (response.data.deletedCount) {
               Swal.fire("Deleted!", "Your file has been deleted.", "success");
@@ -331,7 +328,7 @@ const ApprovedPosts = ({ setNewPost, datas }) => {
       fullname: `${a.name.slice(0, 35)}`,
       city: `${a?.cityCount + " " + "city/s"}`,
 
-      email: `${a?.category + ">" + a?.subCategory}`,
+      email: `${a?.subCategory}`,
       contact: `${a?.phone}`,
       createdAt: `${
         a?.createdAt?.split("T")[0] +
@@ -458,7 +455,7 @@ const ApprovedPosts = ({ setNewPost, datas }) => {
           }))}
         />
 
-        <Select
+        {/* <Select
           showSearch
           allowClear
           className='w-full sm:w-2/12 '
@@ -472,7 +469,7 @@ const ApprovedPosts = ({ setNewPost, datas }) => {
             label: a.name,
             value: a.name,
           }))}
-        />
+        /> */}
 
         <label>
           <select

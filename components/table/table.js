@@ -267,7 +267,7 @@ const Tables = ({ posts, setReload, reload }) => {
     }).then((result) => {
       if (result.isConfirmed) {
         axios
-          .delete(`https://paraglive-backend.vercel.app/api/products/${id}`, {
+          .delete(`http://localhost:5000/api/products/${id}`, {
             headers: {
               authorization: `Bearer ${usersStringfy}`,
             },

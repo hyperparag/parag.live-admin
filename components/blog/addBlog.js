@@ -122,7 +122,7 @@ const AddBlog = () => {
     } else {
       const formData = new FormData();
       formData.append("images", fileList[0].originFileObj);
-      await fetch("https://paraglive-backend.vercel.app/api/files2/files", {
+      await fetch("http://localhost:5000/api/files2/files", {
         method: "POST",
         body: formData,
       })
@@ -136,46 +136,49 @@ const AddBlog = () => {
     data["writer"] = user?.firstName + user?.lastName;
 
     await Promise.all([
-      axios.post("https://paraglive-backend.vercel.app/api/blogs", data, {
+      axios.post("http://localhost:5000/api/blogs", data, {
         headers: {
           "content-type": "application/json",
           authorization: `Bearer ${usersStringfy}`,
         },
       }),
-      axios.post("https://skipthegame-live-backend.vercel.app/api/blogs", data, {
-        headers: {
-          "content-type": "application/json",
-          authorization: `Bearer ${usersStringfy}`,
+      axios.post(
+        "https://skipthegame-live-backend.vercel.app/api/blogs",
+        data,
+        {
+          headers: {
+            "content-type": "application/json",
+            authorization: `Bearer ${usersStringfy}`,
+          },
         },
-      }),
-    ])
-      .then(([response]) => {
-        setIsLoadingimgS(false);
-        if (response.data.status == "success") {
-          Swal.fire({
-            position: "top-center",
-            icon: "success",
-            title: "Your work has been saved",
-            showConfirmButton: false,
-            timer: 1500,
-          }).then(setFileList([]));
-          setTimeout(() => {
-            router.reload();
-          }, 500);
-          setState({
-            ...state,
-            title: "",
-            writer: "",
-            category: "",
-            desc: "",
-            image: "",
-            limit: "",
-            metaDesc: "",
-            permalink: "",
-            metaKey: "",
-          });
-        }
-      });
+      ),
+    ]).then(([response]) => {
+      setIsLoadingimgS(false);
+      if (response.data.status == "success") {
+        Swal.fire({
+          position: "top-center",
+          icon: "success",
+          title: "Your work has been saved",
+          showConfirmButton: false,
+          timer: 1500,
+        }).then(setFileList([]));
+        setTimeout(() => {
+          router.reload();
+        }, 500);
+        setState({
+          ...state,
+          title: "",
+          writer: "",
+          category: "",
+          desc: "",
+          image: "",
+          limit: "",
+          metaDesc: "",
+          permalink: "",
+          metaKey: "",
+        });
+      }
+    });
   };
 
   const handleCancel = () => {
@@ -208,7 +211,7 @@ const AddBlog = () => {
   const upload = async () => {
     const formData = new FormData();
     formData.append("images", image);
-    await fetch("https://paraglive-backend.vercel.app/api/extraimage/files", {
+    await fetch("http://localhost:5000/api/extraimage/files", {
       method: "POST",
       body: formData,
     })

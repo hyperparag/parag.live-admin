@@ -17,7 +17,7 @@ const ReportDetails = ({ report, reload, setReload }) => {
     } else {
       await axios
         .patch(
-          `https://paraglive-backend.vercel.app/api/reports/${id}`,
+          `http://localhost:5000/api/reports/${id}`,
           { isRead: true },
           {
             headers: {
@@ -47,7 +47,7 @@ const ReportDetails = ({ report, reload, setReload }) => {
     }).then((result) => {
       if (result.isConfirmed) {
         axios
-          .delete(`https://paraglive-backend.vercel.app/api/products/${id}`, {
+          .delete(`http://localhost:5000/api/products/${id}`, {
             headers: {
               authorization: `Bearer ${usersStringfy}`,
             },

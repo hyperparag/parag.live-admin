@@ -26,7 +26,7 @@ const UserDashboard = () => {
   async function getUser() {
     try {
       const response = await axios.get(
-        `https://paraglive-backend.vercel.app/api/users/${id}`,
+        `http://localhost:5000/api/users/${id}`,
 
         {
           method: "GET",
@@ -46,7 +46,7 @@ const UserDashboard = () => {
     setPostLoading(true);
     try {
       const response = await axios.get(
-        `https://paraglive-backend.vercel.app/api/products/admin-user/${id}?page=${current}`,
+        `http://localhost:5000/api/products/admin-user/${id}?page=${current}`,
         {
           method: "GET",
         },
@@ -63,7 +63,7 @@ const UserDashboard = () => {
   async function transactions() {
     try {
       const response = await axios.get(
-        `https://paraglive-backend.vercel.app/api/transaction/user?q=${id}`,
+        `http://localhost:5000/api/transaction/user?q=${id}`,
         {
           method: "GET",
         },

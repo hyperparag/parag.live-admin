@@ -54,7 +54,7 @@ const UpdateResponsiveAds = ({ setReload, reload }) => {
       const formData = new FormData();
       formData.append("images", selectedFiles[0]);
 
-      await fetch("https://paraglive-backend.vercel.app/api/files2/files", {
+      await fetch("http://localhost:5000/api/files2/files", {
         method: "POST",
         body: formData,
       })
@@ -73,7 +73,7 @@ const UpdateResponsiveAds = ({ setReload, reload }) => {
 
     try {
       const response = await axios.patch(
-        `https://paraglive-backend.vercel.app/api/responsive-ads/66689fbab312cb5061e3f771`,
+        `http://localhost:5000/api/responsive-ads/66689fbab312cb5061e3f771`,
         newData,
       );
       setOpened(false);

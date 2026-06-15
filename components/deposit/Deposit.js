@@ -17,7 +17,7 @@ const Deposit = ({ setnewUser }) => {
   async function totalDeposit() {
     try {
       const response = await axios.get(
-        `https://paraglive-backend.vercel.app/api/deposit?email=${email}&size=${pageSize}&page=${current}`,
+        `http://localhost:5000/api/deposit?email=${email}&size=${pageSize}&page=${current}`,
       );
 
       setDeposits(response.data.deposits);

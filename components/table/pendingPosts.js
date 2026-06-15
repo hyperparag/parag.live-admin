@@ -120,7 +120,7 @@ const ApprovedPosts = ({ setNewPost, datas }) => {
 
   async function getPosts() {
     fetch(
-      `https://paraglive-backend.vercel.app/api/products/admin?page=${current}&size=${pageSize}`,
+      `http://localhost:5000/api/products/admin?page=${current}&size=${pageSize}`,
       {
         method: "GET",
         headers: {
@@ -156,7 +156,7 @@ const ApprovedPosts = ({ setNewPost, datas }) => {
     }).then((result) => {
       if (result.isConfirmed) {
         axios
-          .delete(`https://paraglive-backend.vercel.app/api/products/${id}`, {
+          .delete(`http://localhost:5000/api/products/${id}`, {
             headers: {
               authorization: `Bearer ${usersStringfy}`,
             },
@@ -190,10 +190,7 @@ const ApprovedPosts = ({ setNewPost, datas }) => {
     }).then((result) => {
       if (result.isConfirmed) {
         axios
-          .post(
-            `https://paraglive-backend.vercel.app/api/products/deleteMany`,
-            ids,
-          )
+          .post(`http://localhost:5000/api/products/deleteMany`, ids)
           .then((response) => {
             if (response.data.deletedCount) {
               Swal.fire("Deleted!", "Your file has been deleted.", "success");
@@ -220,7 +217,7 @@ const ApprovedPosts = ({ setNewPost, datas }) => {
     }).then((result) => {
       if (result.isConfirmed) {
         axios
-          .post(`https://paraglive-backend.vercel.app/api/products/many`, ids)
+          .post(`http://localhost:5000/api/products/many`, ids)
           .then((response) => {
             if (response.data.status == 200) {
               Swal.fire("Updated!", "Your file has been updated.", "success");
@@ -493,7 +490,7 @@ const ApprovedPosts = ({ setNewPost, datas }) => {
             ))}
           </select>
         </label>
-        <label>
+        {/* <label>
           <select
             className=' bg-white border rounded p-1 sm:p-2'
             onChange={(e) => setSubCategory(e.target.value)}
@@ -506,7 +503,7 @@ const ApprovedPosts = ({ setNewPost, datas }) => {
               </>
             ))}
           </select>
-        </label>
+        </label> */}
       </div>
       <span>
         {hasSelected ? `Selected ${selectedRowKeys.length} items` : ""}

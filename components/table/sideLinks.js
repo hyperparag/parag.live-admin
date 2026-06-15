@@ -87,15 +87,12 @@ const SideLinks = () => {
 
   async function getAds() {
     try {
-      const response = await axios.get(
-        `https://paraglive-backend.vercel.app/api/sideads`,
-        {
-          method: "GET",
-          headers: {
-            authorization: `Bearer ${usersStringfy}`,
-          },
+      const response = await axios.get(`http://localhost:5000/api/sideads`, {
+        method: "GET",
+        headers: {
+          authorization: `Bearer ${usersStringfy}`,
         },
-      );
+      });
       const data = response.data.ads;
 
       setAds(data);
@@ -120,7 +117,7 @@ const SideLinks = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         axios
-          .delete(`https://paraglive-backend.vercel.app/api/sideads/${id}`)
+          .delete(`http://localhost:5000/api/sideads/${id}`)
           .then((response) => {
             if (response.data.status == "success") {
               Swal.fire("Deleted!", "Your file has been deleted.", "success");
@@ -147,10 +144,7 @@ const SideLinks = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         axios
-          .post(
-            `https://paraglive-backend.vercel.app/api/sideads/deleteMany`,
-            ids,
-          )
+          .post(`http://localhost:5000/api/sideads/deleteMany`, ids)
           .then((response) => {
             if (response.data.deletedCount) {
               Swal.fire("Deleted!", "Your file has been deleted.", "success");
@@ -354,7 +348,7 @@ const SideLinks = () => {
 
     const formData = new FormData();
     formData.append("images", fileList[0].originFileObj);
-    fetch("https://paraglive-backend.vercel.app/api/extraimage/files", {
+    fetch("http://localhost:5000/api/extraimage/files", {
       method: "POST",
       body: formData,
     })
@@ -367,7 +361,7 @@ const SideLinks = () => {
             link,
             category: cat,
           };
-          fetch("https://paraglive-backend.vercel.app/api/sideads", {
+          fetch("http://localhost:5000/api/sideads", {
             method: "POST",
             headers: {
               "content-type": "application/json",
@@ -429,7 +423,7 @@ const SideLinks = () => {
 
     fileList[0] &&
       (formData.append("images", fileList[0].originFileObj),
-      await fetch("https://paraglive-backend.vercel.app/api/extraimage/files", {
+      await fetch("http://localhost:5000/api/extraimage/files", {
         method: "POST",
         body: formData,
       })
@@ -438,17 +432,14 @@ const SideLinks = () => {
           data.image = e.url;
         }));
 
-    fetch(
-      `https://paraglive-backend.vercel.app/api/sideads/${selectedData._id}`,
-      {
-        method: "PATCH",
-        headers: {
-          "content-type": "application/json",
-          authorization: `Bearer ${usersStringfy}`,
-        },
-        body: JSON.stringify(data),
+    fetch(`http://localhost:5000/api/sideads/${selectedData._id}`, {
+      method: "PATCH",
+      headers: {
+        "content-type": "application/json",
+        authorization: `Bearer ${usersStringfy}`,
       },
-    )
+      body: JSON.stringify(data),
+    })
       .then((res) => res.json())
       .then((data) => {
         addlinkloading(false);

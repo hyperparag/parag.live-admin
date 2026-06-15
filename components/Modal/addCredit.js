@@ -27,7 +27,7 @@ const AddCredit = ({ user, setReload, reload }) => {
       if (result.isConfirmed) {
         axios
           .patch(
-            `https://paraglive-backend.vercel.app/api/users/add-credit/${id}?isUpdate=${
+            `http://localhost:5000/api/users/add-credit/${id}?isUpdate=${
               user?.userId ? `${user?._id}` : ""
             }`,
             {

@@ -25,6 +25,7 @@ import AddBlog from "../../components/blog/addBlog";
 import BlogsList from "../../components/blog/blogsList";
 import BlogDetails from "../../components/Modal/blogDetails";
 import ReportList from "../../components/table/reportList";
+import VerificationList from "../../components/table/verificationList";
 // import ReportDetails from "../../components/Modal/reportDetails";
 import SideLinks from "../../components/table/sideLinks";
 import AddCredit from "../../components/Modal/addCredit";
@@ -34,7 +35,7 @@ import {
   HiOutlinePencilSquare,
 } from "react-icons/hi2";
 import { FcTodoList } from "react-icons/fc";
-import { MdOutlinePlaylistPlay } from "react-icons/md";
+import { MdOutlinePlaylistPlay, MdVerifiedUser } from "react-icons/md";
 import { FaBloggerB } from "react-icons/fa";
 import { GoReport } from "react-icons/go";
 import { BsLayoutTextSidebar } from "react-icons/bs";
@@ -43,6 +44,7 @@ import { HiOutlineClipboardList } from "react-icons/hi";
 import { Layout, Menu, theme } from "antd";
 import DataCards from "../../components/charts/dataCards";
 import ReportDetails from "../../components/Modal/reportDetails";
+import VerificationDetails from "../../components/Modal/verificationDetails";
 import RainbowAds from "../../components/rainbow-ads";
 import ResponsiveAds from "../../components/responsive-ads";
 import Deposit from "../../components/deposit/Deposit";
@@ -56,6 +58,7 @@ const initialState = {
   monthList: {},
   userList: [],
   reportlist: [],
+  verificationRequest: {},
 };
 
 const SuperAdmin = () => {
@@ -98,15 +101,12 @@ const SuperAdmin = () => {
 
   async function allData() {
     try {
-      const response = await axios.get(
-        `https://paraglive-backend.vercel.app/api/allData`,
-        {
-          method: "GET",
-          headers: {
-            authorization: `Bearer ${usersStringfy}`,
-          },
+      const response = await axios.get(`http://localhost:5000/api/allData`, {
+        method: "GET",
+        headers: {
+          authorization: `Bearer ${usersStringfy}`,
         },
-      );
+      });
 
       setAllData(response.data);
 
@@ -269,6 +269,19 @@ const SuperAdmin = () => {
     );
   }
 
+  if (state.tab == "verification") {
+    content = (
+      <div>
+        <h1 className='text-2xl font-bold m-5 text-black'>
+          Verification Requests
+        </h1>
+        <div className='m-5'>
+          <VerificationList setstate={setstate} state={state} reload={reload} />
+        </div>
+      </div>
+    );
+  }
+
   if (state.tab == "transaction") {
     content = (
       <div>
@@ -340,6 +353,11 @@ const SuperAdmin = () => {
       ),
     ]),
     getItem("Reports", <GoReport className='icons' />, "reports"),
+    getItem(
+      "Verification Requests",
+      <MdVerifiedUser className='icons' />,
+      "verification",
+    ),
   ];
 
   return (
@@ -456,6 +474,11 @@ const SuperAdmin = () => {
             setReload={setReload}
             reload={reload}
           ></ReportDetails>
+          <VerificationDetails
+            request={state.verificationRequest}
+            setReload={setReload}
+            reload={reload}
+          ></VerificationDetails>
         </Layout>
       </Layout>
     </>
