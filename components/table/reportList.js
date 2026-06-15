@@ -46,7 +46,7 @@ const ReportList = ({ setstate, reload, state }) => {
   async function getUser() {
     try {
       const response = await axios.get(
-        `http://localhost:5000/api/reports?page=${current}`,
+        `https://paraglive-backend.vercel.app/api/reports?page=${current}`,
         {
           method: "GET",
           headers: {
@@ -81,7 +81,7 @@ const ReportList = ({ setstate, reload, state }) => {
     }).then((result) => {
       if (result.isConfirmed) {
         axios
-          .delete(`http://localhost:5000/api/reports/${id}`, {
+          .delete(`https://paraglive-backend.vercel.app/api/reports/${id}`, {
             headers: {
               authorization: `Bearer ${usersStringfy}`,
             },

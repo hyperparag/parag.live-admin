@@ -28,7 +28,7 @@ const Modals = ({ data, token }) => {
 
     await axios
       .patch(
-        `http://localhost:5000/api/users/address/${data?._id}`,
+        `https://paraglive-backend.vercel.app/api/users/address/${data?._id}`,
         datas,
         options,
       )

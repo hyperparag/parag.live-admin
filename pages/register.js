@@ -57,7 +57,7 @@ const Register = () => {
     // data.address["city"] = location?.city
 
     await axios
-      .post("http://localhost:5000/api/users", data)
+      .post("https://paraglive-backend.vercel.app/api/users", data)
       .then((response) => {
         if (response.data.message == "success") {
           setIsLoading(false);

@@ -23,7 +23,7 @@ const UpdateRainbowAds = ({ setReload, reload }) => {
       }
     }
     const response = await axios.patch(
-      `http://localhost:5000/api/rainbow-ads/66689d94951fef8194c923ab`,
+      `https://paraglive-backend.vercel.app/api/rainbow-ads/66689d94951fef8194c923ab`,
       newData,
     );
     setOpened(false);

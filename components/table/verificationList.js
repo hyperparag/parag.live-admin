@@ -14,7 +14,7 @@ const VerificationList = ({ setstate, reload, state }) => {
   async function getRequests() {
     try {
       const response = await axios.get(
-        `http://localhost:5000/api/verification?page=${current}`,
+        `https://paraglive-backend.vercel.app/api/verification?page=${current}`,
         {
           method: "GET",
           headers: {

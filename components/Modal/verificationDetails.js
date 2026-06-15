@@ -14,7 +14,7 @@ const VerificationDetails = ({ request, reload, setReload }) => {
   const review = (status, note) => {
     axios
       .patch(
-        `http://localhost:5000/api/verification/${request?._id}`,
+        `https://paraglive-backend.vercel.app/api/verification/${request?._id}`,
         { status, note },
         {
           headers: {

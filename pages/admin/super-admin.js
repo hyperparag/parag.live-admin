@@ -101,12 +101,15 @@ const SuperAdmin = () => {
 
   async function allData() {
     try {
-      const response = await axios.get(`http://localhost:5000/api/allData`, {
-        method: "GET",
-        headers: {
-          authorization: `Bearer ${usersStringfy}`,
+      const response = await axios.get(
+        `https://paraglive-backend.vercel.app/api/allData`,
+        {
+          method: "GET",
+          headers: {
+            authorization: `Bearer ${usersStringfy}`,
+          },
         },
-      });
+      );
 
       setAllData(response.data);
 

@@ -25,9 +25,12 @@ const Header = () => {
 
   async function getUser() {
     try {
-      const response = await axios.get(`http://localhost:5000/api/links`, {
-        method: "GET",
-      });
+      const response = await axios.get(
+        `https://paraglive-backend.vercel.app/api/links`,
+        {
+          method: "GET",
+        },
+      );
       const data = response.data.links[0];
 
       setLinks(data);

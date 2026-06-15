@@ -101,7 +101,7 @@ const UserList = ({ setnewUser, datas }) => {
   async function getUser() {
     try {
       const response = await axios.get(
-        `http://localhost:5000/api/users?page=${page}&q=${keyword}&size=${pageSize}`,
+        `https://paraglive-backend.vercel.app/api/users?page=${page}&q=${keyword}&size=${pageSize}`,
         {
           method: "GET",
           headers: {
@@ -134,7 +134,7 @@ const UserList = ({ setnewUser, datas }) => {
       if (result.isConfirmed) {
         axios
 
-          .delete(`http://localhost:5000/api/users/${id}`, {
+          .delete(`https://paraglive-backend.vercel.app/api/users/${id}`, {
             headers: {
               authorization: `Bearer ${usersStringfy}`,
             },

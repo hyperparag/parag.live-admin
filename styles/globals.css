@@ -120,7 +120,7 @@ html {
   -webkit-user-select: none;
   touch-action: manipulation;
 }
-/* http://localhost:5000/api/ */
+/* https://paraglive-backend.vercel.app/api/ */
 
 .icons {
   color: rgb(28, 187, 235) !important;

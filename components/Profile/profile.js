@@ -42,7 +42,7 @@ const Profile = ({ user }) => {
   async function getUser(user) {
     try {
       const response = await axios.get(
-        `http://localhost:5000/api/users/${user._id}`,
+        `https://paraglive-backend.vercel.app/api/users/${user._id}`,
       );
       const data = response.data.data.user;
       setLoading(false);
@@ -63,7 +63,7 @@ const Profile = ({ user }) => {
     setIsLoadingimgS(true);
     const formData = new FormData();
     formData.append("images", image);
-    await fetch("http://localhost:5000/api/image/upload-file", {
+    await fetch("https://paraglive-backend.vercel.app/api/image/upload-file", {
       method: "POST",
       body: formData,
     })
@@ -118,7 +118,7 @@ const Profile = ({ user }) => {
 
     await axios
       .patch(
-        `http://localhost:5000/api/users/${state.userData._id}`,
+        `https://paraglive-backend.vercel.app/api/users/${state.userData._id}`,
         data,
         options,
       )
@@ -155,7 +155,7 @@ const Profile = ({ user }) => {
 
     await axios
       .patch(
-        `http://localhost:5000/api/users/password/${state.userData._id}`,
+        `https://paraglive-backend.vercel.app/api/users/password/${state.userData._id}`,
         data,
         options,
       )

@@ -122,7 +122,7 @@ const AddBlog = () => {
     } else {
       const formData = new FormData();
       formData.append("images", fileList[0].originFileObj);
-      await fetch("http://localhost:5000/api/files2/files", {
+      await fetch("https://paraglive-backend.vercel.app/api/files2/files", {
         method: "POST",
         body: formData,
       })
@@ -136,7 +136,7 @@ const AddBlog = () => {
     data["writer"] = user?.firstName + user?.lastName;
 
     await Promise.all([
-      axios.post("http://localhost:5000/api/blogs", data, {
+      axios.post("https://paraglive-backend.vercel.app/api/blogs", data, {
         headers: {
           "content-type": "application/json",
           authorization: `Bearer ${usersStringfy}`,
@@ -211,7 +211,7 @@ const AddBlog = () => {
   const upload = async () => {
     const formData = new FormData();
     formData.append("images", image);
-    await fetch("http://localhost:5000/api/extraimage/files", {
+    await fetch("https://paraglive-backend.vercel.app/api/extraimage/files", {
       method: "POST",
       body: formData,
     })

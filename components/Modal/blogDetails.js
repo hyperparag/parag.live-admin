@@ -119,7 +119,7 @@ const BlogDetails = ({ blog, setReload, reload, blogLoading }) => {
     }).then((result) => {
       if (result.isConfirmed) {
         axios
-          .delete(`http://localhost:5000/api/blogs/${id}`, {
+          .delete(`https://paraglive-backend.vercel.app/api/blogs/${id}`, {
             headers: { authorization: `Bearer ${token}` },
           })
           .then((response) => {
@@ -143,10 +143,13 @@ const BlogDetails = ({ blog, setReload, reload, blogLoading }) => {
         const formData = new FormData();
         formData.append("images", image);
 
-        const uploadRes = await fetch("http://localhost:5000/api/files/files", {
-          method: "POST",
-          body: formData,
-        });
+        const uploadRes = await fetch(
+          "https://paraglive-backend.vercel.app/api/files/files",
+          {
+            method: "POST",
+            body: formData,
+          },
+        );
 
         const result = await uploadRes.json();
         data.image = result.url;
@@ -156,7 +159,7 @@ const BlogDetails = ({ blog, setReload, reload, blogLoading }) => {
 
       // Send update request
       const res = await axios.patch(
-        `http://localhost:5000/api/blogs/${blog?._id}`,
+        `https://paraglive-backend.vercel.app/api/blogs/${blog?._id}`,
         data,
         {
           headers: {
