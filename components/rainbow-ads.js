@@ -31,7 +31,7 @@ const RainbowAds = () => {
         <h1 className='uppercase font-bold font-mono text-2xl text-pink-700'>
           ADS/Rainbow Ad
         </h1>
-        <UpdateRainbowAds setReload={setReload} reload={reload} />
+        <UpdateRainbowAds setReload={setReload} reload={reload} ads={ads} />
       </div>
       <div className='h-[500px] flex justify-center items-center sm:m-10 mt-10 bg-white'>
         {loading ? (

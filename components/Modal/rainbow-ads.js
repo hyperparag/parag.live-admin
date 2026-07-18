@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { Modal } from "antd";
 
-const UpdateRainbowAds = ({ setReload, reload }) => {
+const UpdateRainbowAds = ({ setReload, reload, ads }) => {
   const [opened, setOpened] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -46,11 +46,19 @@ const UpdateRainbowAds = ({ setReload, reload }) => {
         <form onSubmit={handleSubmit}>
           <label>
             Text : <br />
-            <input name='text' className='bg-gray-200 w-full text-pink-700' />
+            <input
+              name='text'
+              defaultValue={ads?.text}
+              className='bg-gray-200 w-full text-pink-700'
+            />
           </label>
           <label>
             Link : <br />
-            <input name='link' className='bg-gray-200 w-full text-pink-700' />
+            <input
+              name='link'
+              defaultValue={ads?.link}
+              className='bg-gray-200 w-full text-pink-700'
+            />
           </label>
           <br />
           <br />

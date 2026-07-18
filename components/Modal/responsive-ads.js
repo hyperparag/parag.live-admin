@@ -4,7 +4,7 @@ import { FaImage, FaTrash } from "react-icons/fa";
 import style from "./style.module.css";
 import { Modal } from "antd";
 
-const UpdateResponsiveAds = ({ setReload, reload }) => {
+const UpdateResponsiveAds = ({ setReload, reload, ads }) => {
   const [opened, setOpened] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [previewUrls, setPreviewUrls] = useState([]);
@@ -101,15 +101,24 @@ const UpdateResponsiveAds = ({ setReload, reload }) => {
           className={`${previewUrls.length < 1 ? "block" : "hidden"} h-[200px]`}
         >
           {previewUrls.length < 1 && (
-            <label className='block font-bold relative'>
-              <input
-                className='rounded w-[200px]'
-                type='file'
-                accept='image/*'
-                onChange={handleFileChange}
-              />
-              <FaImage className='absolute top-0 bg-white w-[200px] h-[200px] p-5 text-gray-400 border border-red-500 rounded' />
-            </label>
+            <>
+              {ads?.image && (
+                <img
+                  src={ads.image}
+                  alt='Current'
+                  className='w-[200px] h-[200px] object-cover rounded mb-2'
+                />
+              )}
+              <label className='block font-bold relative'>
+                <input
+                  className='rounded w-[200px]'
+                  type='file'
+                  accept='image/*'
+                  onChange={handleFileChange}
+                />
+                <FaImage className='absolute top-0 bg-white w-[200px] h-[200px] p-5 text-gray-400 border border-red-500 rounded' />
+              </label>
+            </>
           )}
         </div>
         <div>
@@ -134,7 +143,11 @@ const UpdateResponsiveAds = ({ setReload, reload }) => {
         <form onSubmit={handleSubmit}>
           <label>
             Link : <br />
-            <input name='link' className='bg-gray-200 w-full text-green-700' />
+            <input
+              name='link'
+              defaultValue={ads?.link}
+              className='bg-gray-200 w-full text-green-700'
+            />
           </label>
           <br />
           <br />

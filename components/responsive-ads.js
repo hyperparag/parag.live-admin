@@ -31,7 +31,7 @@ const ResponsiveAds = () => {
         <h1 className='uppercase font-bold font-mono text-2xl text-pink-700'>
           ADS/Responsive Ad
         </h1>
-        <UpdateResponsiveAds setReload={setReload} reload={reload} />
+        <UpdateResponsiveAds setReload={setReload} reload={reload} ads={ads} />
       </div>
       <div className='h-fit flex justify-center items-center sm:m-10 mt-10 bg-white'>
         {loading ? (
