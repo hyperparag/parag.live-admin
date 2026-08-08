@@ -9,6 +9,7 @@ const PostDetails = ({ id, setReload, reload }) => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  
   async function getPost() {
     fetch(`https://paraglive-backend.vercel.app/api/products/${id}`, {
       method: "GET",
