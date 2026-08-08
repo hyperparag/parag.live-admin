@@ -1,45 +1,24 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { FaImage, FaTrash } from "react-icons/fa";
-import style from "./style.module.css";
 import { Modal } from "antd";
 
 const UpdateResponsiveAds = ({ setReload, reload, ads }) => {
   const [opened, setOpened] = useState(false);
-  const [selectedFiles, setSelectedFiles] = useState([]);
-  const [previewUrls, setPreviewUrls] = useState([]);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const handleFileChange = (event) => {
-    const files = event.target.files;
-
-    if (previewUrls?.length == 1) {
-      alert("Max 1 files");
-      return;
-    }
-    if (files.length > 0) {
-      const newSelectedFiles = Array.from(files);
-      setSelectedFiles([...selectedFiles, ...newSelectedFiles]);
-
-      const newPreviewUrls = newSelectedFiles.map((file) =>
-        URL.createObjectURL(file),
-      );
-      setPreviewUrls([...previewUrls, ...newPreviewUrls]);
-    }
+    const file = event.target.files?.[0];
+    if (!file) return;
+    setSelectedFile(file);
+    setPreviewUrl(URL.createObjectURL(file));
   };
 
-  const removeImage = (e) => {
-    const indexToRemove = previewUrls.findIndex((url) => url === e);
-
-    if (indexToRemove !== -1) {
-      const newSelectedFiles = [...selectedFiles];
-      newSelectedFiles.splice(indexToRemove, 1);
-
-      const newPreviewUrls = [...previewUrls];
-      newPreviewUrls.splice(indexToRemove, 1);
-      setSelectedFiles(newSelectedFiles);
-      setPreviewUrls(newPreviewUrls);
-    }
+  const removeImage = () => {
+    setSelectedFile(null);
+    setPreviewUrl(null);
   };
 
   const handleSubmit = async (e) => {
@@ -47,12 +26,11 @@ const UpdateResponsiveAds = ({ setReload, reload, ads }) => {
     setLoading(true);
 
     const link = e.target.link.value;
-    const image = "";
-    const data = { link, image };
+    const data = { link, image: "" };
 
-    if (selectedFiles[0]) {
+    if (selectedFile) {
       const formData = new FormData();
-      formData.append("images", selectedFiles[0]);
+      formData.append("images", selectedFile);
 
       await fetch("https://paraglive-backend.vercel.app/api/files2/files", {
         method: "POST",
@@ -72,21 +50,26 @@ const UpdateResponsiveAds = ({ setReload, reload, ads }) => {
     }
 
     try {
-      const response = await axios.patch(
-        `https://paraglive-backend.vercel.app/api/responsive-ads/66689fbab312cb5061e3f771`,
+      await axios.patch(
+        `https://paraglive-backend.vercel.app/api/responsive-ads/6a4dff1365f818834bf4b27b`,
         newData,
       );
       setOpened(false);
       setReload(!reload);
-      setLoading(false);
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 
   const onClose = () => {
     setOpened(false);
+    setSelectedFile(null);
+    setPreviewUrl(null);
   };
+
+  const displayImage = previewUrl || ads?.image;
 
   return (
     <div>
@@ -94,78 +77,63 @@ const UpdateResponsiveAds = ({ setReload, reload, ads }) => {
         open={opened}
         centered
         onCancel={onClose}
-        title='Update Resposive Ad'
+        title='Update Responsive Ad'
         footer={false}
+        width={420}
       >
-        <div
-          className={`${previewUrls.length < 1 ? "block" : "hidden"} h-[200px]`}
-        >
-          {previewUrls.length < 1 && (
-            <>
-              {ads?.image && (
+        <form onSubmit={handleSubmit} className='flex flex-col gap-4'>
+          <div className='flex flex-col items-center gap-2'>
+            <div className='relative w-[220px] h-[220px] rounded-lg overflow-hidden border border-gray-300 bg-gray-100 group'>
+              {displayImage ? (
                 <img
-                  src={ads.image}
-                  alt='Current'
-                  className='w-[200px] h-[200px] object-cover rounded mb-2'
+                  src={displayImage}
+                  alt='Ad preview'
+                  className='w-full h-full object-cover'
                 />
+              ) : (
+                <div className='w-full h-full flex items-center justify-center text-gray-400'>
+                  <FaImage size={48} />
+                </div>
               )}
-              <label className='block font-bold relative'>
+
+              <label className='absolute inset-0 flex items-center justify-center bg-black/0 group-hover:bg-black/50 text-transparent group-hover:text-white text-sm font-semibold cursor-pointer transition-colors'>
+                Change Image
                 <input
-                  className='rounded w-[200px]'
                   type='file'
                   accept='image/*'
+                  className='hidden'
                   onChange={handleFileChange}
                 />
-                <FaImage className='absolute top-0 bg-white w-[200px] h-[200px] p-5 text-gray-400 border border-red-500 rounded' />
               </label>
-            </>
-          )}
-        </div>
-        <div>
-          {previewUrls.length > 0 && (
-            <div className=' sm:flex items-center sm:flex-row  gap-5  sm:mb-0 mb-10'>
-              {previewUrls.map((url, index) => (
-                <div key={index} className={`${style.card}`}>
-                  <img src={url} alt={`Preview ${index + 1}`} />
-                  <p
-                    className={`${style.cross}`}
-                    onClick={() => removeImage(url)}
-                  >
-                    <span>
-                      <FaTrash />
-                    </span>
-                  </p>
-                </div>
-              ))}
+
+              {previewUrl && (
+                <button
+                  type='button'
+                  onClick={removeImage}
+                  className='absolute top-2 right-2 bg-white/90 text-red-600 rounded-full p-2 shadow hover:bg-white'
+                >
+                  <FaTrash size={12} />
+                </button>
+              )}
             </div>
-          )}
-        </div>
-        <form onSubmit={handleSubmit}>
-          <label>
-            Link : <br />
+          </div>
+
+          <label className='block'>
+            <span className='block font-bold mb-1'>Link</span>
             <input
               name='link'
               defaultValue={ads?.link}
-              className='bg-gray-200 w-full text-green-700'
+              className='w-full box-border bg-gray-100 border border-gray-300 rounded px-3 py-2 text-green-700 focus:outline-none focus:ring-2 focus:ring-pink-600'
             />
           </label>
-          <br />
-          <br />
-          {loading ? (
-            <button
-              disabled
-              className='bg-pink-700 font-mono text-white rounded font-bold  py-1 px-8 cursor-not-allowed'
-            >
-              Loading...
-            </button>
-          ) : (
-            <button
-              type='submit'
-              className='bg-pink-700 font-mono text-white rounded font-bold  py-1 px-8'
-            >
-              Update Ad
-            </button>
-          )}
+
+          <button
+            type='submit'
+            disabled={loading}
+            className='bg-pink-700 disabled:opacity-60 disabled:cursor-not-allowed font-mono text-white rounded font-bold py-2 px-8 self-start'
+          >
+            {loading ? "Updating..." : "Update Ad"}
+          </button>
         </form>
       </Modal>
 
