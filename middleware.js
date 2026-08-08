@@ -29,9 +29,6 @@ export default function middleware(req) {
       return NextResponse.rewrite(new URL("/login", url));
     }
   }
-
-
-
   if (url.includes("/recharge-credits")) {
     try {
       if (verify == undefined && !decoded?.email) {
