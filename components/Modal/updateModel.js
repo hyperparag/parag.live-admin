@@ -11,7 +11,6 @@ const initialState = {
 };
 const UpdateModel = ({ data, token }) => {
   const [state, setState] = useState(initialState);
-
   const dispatch = (e) => {
     setState({ ...state, [e.type]: e.payload });
   };
