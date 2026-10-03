@@ -1,3 +1,4 @@
+import { compressImage } from "../../utils/compressImage";
 import React, { useState } from "react";
 import axios from "axios";
 import { FaImage, FaTrash } from "react-icons/fa";
@@ -30,7 +31,7 @@ const UpdateResponsiveAds = ({ setReload, reload, ads }) => {
 
     if (selectedFile) {
       const formData = new FormData();
-      formData.append("images", selectedFile);
+      formData.append("images", (await compressImage(selectedFile)).file);
 
       await fetch("https://paraglive-backend.vercel.app/api/files2/files", {
         method: "POST",

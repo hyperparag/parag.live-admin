@@ -361,6 +361,13 @@ const SuperAdmin = () => {
       <MdVerifiedUser className='icons' />,
       "verification",
     ),
+    // The content block for this already existed but had no menu entry, so the
+    // panel could not be reached from the UI.
+    getItem(
+      "Transaction History",
+      <TransactionOutlined className='icons' />,
+      "transaction",
+    ),
   ];
 
   return (

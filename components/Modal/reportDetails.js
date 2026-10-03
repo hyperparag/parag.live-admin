@@ -219,16 +219,10 @@ const ReportDetails = ({ report, reload, setReload }) => {
                 />
               )}
             </div>
-            <button>
-              <label
-                htmlFor='my-modal-16'
-                className='bg-red-600 px-3 py-1 text-white cursor-pointer font-bold rounded'
-              >
-                Ban User
-              </label>
-            </button>
-            <br />
-            <br />
+            {/* A "Ban User" button used to sit here with no handler attached,
+                so it silently did nothing when clicked. Banning needs an
+                isBanned flag on the user plus a check at login, so it is left
+                out rather than shown as a control that does not work. */}
             <br />
             <br />
             <h1 className='text-red-400 text-2xl'>Reporter Details</h1>

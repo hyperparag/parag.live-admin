@@ -213,6 +213,30 @@ const UserDashboard = () => {
                 {users?.address?.regionName}, {users?.address?.country},
               </p>
             )}
+            <br />
+            <div className='border border-blue-300 p-3 rounded'>
+              <p className='text-sm sm:text-xl font-bold mb-2'>Referrals</p>
+              <p className='text-sm sm:text-lg'>
+                Code :{" "}
+                <span className='font-mono tracking-widest'>
+                  {users?.referralCode || "not issued yet"}
+                </span>
+              </p>
+              <p className='text-sm sm:text-lg'>
+                Earned : ${Number(users?.referralEarnings ?? 0).toFixed(2)}
+                {" "}| Converted to credit : $
+                {Number(users?.referralConverted ?? 0).toFixed(2)}
+                {" "}| Available : $
+                {(
+                  Number(users?.referralEarnings ?? 0) -
+                  Number(users?.referralConverted ?? 0)
+                ).toFixed(2)}
+              </p>
+              <p className='text-sm sm:text-lg'>
+                Referred by :{" "}
+                {users?.referredBy ? String(users.referredBy) : "nobody"}
+              </p>
+            </div>
           </div>
         </div>
       ),

@@ -193,6 +193,7 @@ const ApprovedPosts = ({ setNewPost, datas }) => {
           .post(
             `https://paraglive-backend.vercel.app/api/products/deleteMany`,
             ids,
+            { headers: { authorization: `Bearer ${usersStringfy}` } },
           )
           .then((response) => {
             if (response.data.deletedCount) {
@@ -220,7 +221,9 @@ const ApprovedPosts = ({ setNewPost, datas }) => {
     }).then((result) => {
       if (result.isConfirmed) {
         axios
-          .post(`https://paraglive-backend.vercel.app/api/products/many`, ids)
+          .post(`https://paraglive-backend.vercel.app/api/products/many`, ids, {
+            headers: { authorization: `Bearer ${usersStringfy}` },
+          })
           .then((response) => {
             if (response.data.status == 200) {
               Swal.fire("Updated!", "Your file has been updated.", "success");
@@ -275,6 +278,28 @@ const ApprovedPosts = ({ setNewPost, datas }) => {
       dataIndex: "createdAt",
       key: "3",
       width: 150,
+    },
+    {
+      title: "Reason",
+      dataIndex: "reason",
+      key: "reason",
+      width: 160,
+      render: (_, { reason }) => {
+        if (!reason || reason === "undefined" || reason === "null") {
+          return <span className='text-gray-400'>&mdash;</span>;
+        }
+        const label =
+          reason === "duplicate"
+            ? "Duplicate post"
+            : reason === "banned-word"
+              ? "Flagged wording"
+              : reason === "suspicious-link"
+                ? "Flagged link"
+                : reason;
+        const colour =
+          reason === "duplicate" ? "bg-yellow-200" : "bg-orange-200";
+        return <span className={`${colour} px-2 py-1 rounded`}>{label}</span>;
+      },
     },
     {
       title: "Status",
@@ -376,6 +401,7 @@ const ApprovedPosts = ({ setNewPost, datas }) => {
         a?.createdAt?.split("T")[1]?.split(".")[0]
       }`,
       status: `${a?.isPremium}`,
+      reason: a?.moderationReason ?? "",
       profilePicture: `${
         a?.imgOne + "=" + a?.imgTwo + "=" + a?.imgThree + "=" + a?.imgFour
       }`,

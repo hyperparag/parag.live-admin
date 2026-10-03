@@ -38,8 +38,9 @@ const ReportList = ({ setstate, reload, state }) => {
   const [yScroll, setYScroll] = useState(false);
   const [xScroll, setXScroll] = useState(undefined);
   const [reports, setReports] = useState([]);
-  const [pages, setPage] = useState(9);
+  const [pages, setPage] = useState(0);
   const [current, setCurrent] = useState(1);
+  const [localReload, setLocalReload] = useState(false);
 
   const usersStringfy = Cookies.get("token");
 
@@ -54,8 +55,8 @@ const ReportList = ({ setstate, reload, state }) => {
           },
         },
       );
-      const data = response.data.data.reports;
-      // setPage(response.data.data.totalPost)
+      const data = response.data.data.reports ?? [];
+      setPage(response.data.data.totalPost ?? 0);
       setReports(data);
       setLoading(false);
     } catch (error) {
@@ -67,7 +68,7 @@ const ReportList = ({ setstate, reload, state }) => {
   useEffect(() => {
     setLoading(true);
     getUser();
-  }, [reload, current]);
+  }, [reload, current, localReload]);
 
   const deleteUser = (id) => {
     Swal.fire({
@@ -88,13 +89,35 @@ const ReportList = ({ setstate, reload, state }) => {
           })
           .then((response) => {
             if (response.data.status == "success") {
-              Swal.fire("Deleted!", "Your file has been deleted.", "success");
+              Swal.fire("Deleted!", "The report has been deleted.", "success");
             }
-            const newReports = reports.filter((a) => a._id !== id);
-            setNewPosts(newReports);
+            // This used to call setNewPosts, which is not defined in this
+            // component, so the handler threw as soon as it ran.
+            setReports((prev) => prev.filter((a) => a._id !== id));
+            setLocalReload((v) => !v);
+          })
+          .catch((error) => {
+            Swal.fire(
+              "Could not delete",
+              error?.response?.data?.message || "Please try again.",
+              "error",
+            );
           });
       }
     });
+  };
+
+  /** Mark a report read or unread. The indicator looked like a button but had
+      no handler at all. */
+  const toggleRead = (id, isRead) => {
+    axios
+      .patch(
+        `https://paraglive-backend.vercel.app/api/reports/${id}`,
+        { isRead: !isRead },
+        { headers: { authorization: `Bearer ${usersStringfy}` } },
+      )
+      .then(() => setLocalReload((v) => !v))
+      .catch((error) => console.error(error));
   };
   const findData = (id) => {
     const newReports = reports.find((a) => a._id == id);
@@ -141,18 +164,32 @@ const ReportList = ({ setstate, reload, state }) => {
       key: "operation",
       fixed: "right",
       width: 40,
-      render: (_, { status }) => (
-        <>
+      render: (_, { status, id }) => (
+        <div className='flex gap-2'>
           {status == "false" ? (
-            <button className='bg-red-600 text-white px-2 border-0'>
+            <button
+              onClick={() => toggleRead(id, false)}
+              title='Mark as read'
+              className='bg-red-600 text-white px-2 border-0'
+            >
               unread
             </button>
           ) : (
-            <button className='bg-green-600 text-white px-2 border-0'>
+            <button
+              onClick={() => toggleRead(id, true)}
+              title='Mark as unread'
+              className='bg-green-600 text-white px-2 border-0'
+            >
               read
             </button>
           )}
-        </>
+          <button
+            onClick={() => deleteUser(id)}
+            className='bg-red-800 text-white px-2 border-0'
+          >
+            Delete
+          </button>
+        </div>
       ),
     },
   ];

@@ -1,3 +1,4 @@
+import { compressImage } from "../../utils/compressImage";
 import React, { useEffect, useState } from "react";
 import { Button, Table, Dropdown, Upload, Input } from "antd";
 import style from "../../styles/moduleCss/dashboard.module.css";
@@ -13,8 +14,13 @@ const defaultExpandable = {
     <div>
       <div className={style.smalltable}>
         <div className='flex'>
-          {!record?.profilePicture ? (
-            <img className={style.smTableImage} src={User} height='60px' />
+          {!record?.profilePicture || record?.profilePicture === "undefined" ? (
+            <img
+              className={style.smTableImage}
+              src='/logo.png'
+              alt='No image'
+              height='60px'
+            />
           ) : (
             <img
               className='w-24'
@@ -120,7 +126,9 @@ const SideLinks = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         axios
-          .delete(`https://paraglive-backend.vercel.app/api/sideads/${id}`)
+          .delete(`https://paraglive-backend.vercel.app/api/sideads/${id}`, {
+            headers: { authorization: `Bearer ${usersStringfy}` },
+          })
           .then((response) => {
             if (response.data.status == "success") {
               Swal.fire("Deleted!", "Your file has been deleted.", "success");
@@ -150,6 +158,7 @@ const SideLinks = () => {
           .post(
             `https://paraglive-backend.vercel.app/api/sideads/deleteMany`,
             ids,
+            { headers: { authorization: `Bearer ${usersStringfy}` } },
           )
           .then((response) => {
             if (response.data.deletedCount) {
@@ -190,10 +199,11 @@ const SideLinks = () => {
       width: 150,
       render: (_, { profilePicture }) => (
         <div className='flex'>
-          {!profilePicture ? (
+          {!profilePicture || profilePicture === "undefined" ? (
             <img
               className='img-60 rounded-circle lazyloaded blur-up'
-              src={User}
+              src='/logo.png'
+              alt='No image'
               height='40px'
             />
           ) : (
@@ -349,49 +359,87 @@ const SideLinks = () => {
     },
   ];
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
+    if (!fileList[0]) {
+      Swal.fire({
+        icon: "error",
+        title: "Pick an image first",
+        text: "A side ad needs a banner image.",
+      });
+      return;
+    }
+
     addlinkloading(true);
 
-    const formData = new FormData();
-    formData.append("images", fileList[0].originFileObj);
-    fetch("https://paraglive-backend.vercel.app/api/extraimage/files", {
-      method: "POST",
-      body: formData,
-    })
-      .then((res) => res.json())
-      .then((result) => {
-        if (result) {
-          const data = {
-            title,
-            image: result.url,
-            link,
-            category: cat,
-          };
-          fetch("https://paraglive-backend.vercel.app/api/sideads", {
-            method: "POST",
-            headers: {
-              "content-type": "application/json",
-              authorization: `Bearer ${usersStringfy}`,
-            },
-            body: JSON.stringify(data),
-          })
-            .then((res) => res.json())
-            .then((data) => {
-              addlinkloading(false);
-              if (data) {
-                Swal.fire({
-                  position: "top-center",
-                  icon: "success",
-                  title: "Your work has been saved",
-                  showConfirmButton: false,
-                  timer: 2000,
-                }).then(setReload(!reload));
-                global.document.getElementById("my-modal-11").checked = false;
-                setFileList([]);
-              }
-            });
-        }
+    try {
+      const formData = new FormData();
+      formData.append("images", (await compressImage(fileList[0].originFileObj)).file);
+
+      // /api/extraimage/files is a stub that returns a message and no URL, so
+      // side ad images were never actually stored. This is the live ImageKit
+      // route, and it also gives us the fileId for cleanup on delete.
+      const uploadRes = await fetch(
+        "https://paraglive-backend.vercel.app/api/files2/files",
+        { method: "POST", body: formData },
+      );
+      if (!uploadRes.ok) throw new Error("image upload failed");
+      const result = await uploadRes.json();
+
+      const uploaded = Array.isArray(result)
+        ? { url: result[0] }
+        : (result.files || [])[0] || { url: (result.urls || [])[0] };
+
+      if (!uploaded?.url) throw new Error("no image url returned");
+
+      const data = {
+        title,
+        image: uploaded.url,
+        imageFileId: uploaded.fileId,
+        link,
+        category: cat,
+      };
+
+      const saveRes = await fetch(
+        "https://paraglive-backend.vercel.app/api/sideads",
+        {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+            authorization: `Bearer ${usersStringfy}`,
+          },
+          body: JSON.stringify(data),
+        },
+      );
+      const saved = await saveRes.json();
+      addlinkloading(false);
+
+      if (saved.status === "success") {
+        global.document.getElementById("my-modal-11").checked = false;
+        setFileList([]);
+        Swal.fire({
+          position: "top-center",
+          icon: "success",
+          title: "Your work has been saved",
+          showConfirmButton: false,
+          timer: 2000,
+        });
+        setReload(!reload);
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Could not save the side ad",
+          text: saved.message || "Please try again.",
+        });
+      }
+    } catch (error) {
+      addlinkloading(false);
+      console.error(error);
+      Swal.fire({
+        icon: "error",
+        title: "Could not save the side ad",
+        text: "The image could not be uploaded. Please try again.",
       });
+    }
   };
 
   const handleChange = ({ fileList: newFileList }) => setFileList(newFileList);
@@ -425,18 +473,39 @@ const SideLinks = () => {
       category: cat == "" ? selectedData.category : cat,
     };
 
-    const formData = new FormData();
+    if (fileList[0]) {
+      const formData = new FormData();
+      formData.append("images", (await compressImage(fileList[0].originFileObj)).file);
 
-    fileList[0] &&
-      (formData.append("images", fileList[0].originFileObj),
-      await fetch("https://paraglive-backend.vercel.app/api/extraimage/files", {
-        method: "POST",
-        body: formData,
-      })
-        .then((e) => e.json())
-        .then((e) => {
-          data.image = e.url;
-        }));
+      // Same stub problem as the create path: this used /api/extraimage/files,
+      // which returns no URL, so replacing a banner silently did nothing.
+      try {
+        const uploadRes = await fetch(
+          "https://paraglive-backend.vercel.app/api/files2/files",
+          { method: "POST", body: formData },
+        );
+        if (!uploadRes.ok) throw new Error("image upload failed");
+        const result = await uploadRes.json();
+
+        const uploaded = Array.isArray(result)
+          ? { url: result[0] }
+          : (result.files || [])[0] || { url: (result.urls || [])[0] };
+
+        if (uploaded?.url) {
+          data.image = uploaded.url;
+          data.imageFileId = uploaded.fileId;
+        }
+      } catch (error) {
+        console.error(error);
+        addlinkloading(false);
+        Swal.fire({
+          icon: "error",
+          title: "Could not upload the image",
+          text: "Please try again.",
+        });
+        return;
+      }
+    }
 
     fetch(
       `https://paraglive-backend.vercel.app/api/sideads/${selectedData._id}`,

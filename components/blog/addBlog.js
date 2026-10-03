@@ -1,3 +1,4 @@
+import { compressImage } from "../../utils/compressImage";
 import React, { useEffect, useRef, useState } from "react";
 import style from "../../styles/addBlog.module.css";
 import { Editor } from "@tinymce/tinymce-react";
@@ -96,16 +97,8 @@ const AddBlog = () => {
     } else {
       setError(false);
     }
-    const isLt50KB = file.size / 1024 < 50;
-    if (!isLt50KB) {
-      message.error("Image must be smaller than 50KB!");
-      setError(true);
-      return;
-    } else {
-      setError(false);
-    }
-
-    return isJpgOrPng && isLt50KB;
+    // Oversized images are compressed to 50KB when uploaded.
+    return isJpgOrPng;
   };
 
   const dispatch = (e) => {
@@ -121,7 +114,7 @@ const AddBlog = () => {
       data["image"] = "avater";
     } else {
       const formData = new FormData();
-      formData.append("images", fileList[0].originFileObj);
+      formData.append("images", (await compressImage(fileList[0].originFileObj)).file);
       await fetch("https://paraglive-backend.vercel.app/api/files2/files", {
         method: "POST",
         body: formData,
@@ -210,16 +203,33 @@ const AddBlog = () => {
 
   const upload = async () => {
     const formData = new FormData();
-    formData.append("images", image);
-    await fetch("https://paraglive-backend.vercel.app/api/extraimage/files", {
-      method: "POST",
-      body: formData,
-    })
-      .then((res) => res.json())
-      .then((result) => {
-        setloading(false);
-        setImageLink(result.url);
-      });
+    formData.append("images", (await compressImage(image)).file);
+
+    // This used /api/extraimage/files, a stub that returns a message and no
+    // URL, so the uploaded image link was always undefined.
+    try {
+      const res = await fetch(
+        "https://paraglive-backend.vercel.app/api/files2/files",
+        { method: "POST", body: formData },
+      );
+      if (!res.ok) throw new Error("upload failed");
+      const result = await res.json();
+
+      const uploaded = Array.isArray(result)
+        ? { url: result[0] }
+        : (result.files || [])[0] || { url: (result.urls || [])[0] };
+
+      setloading(false);
+      if (uploaded?.url) {
+        setImageLink(uploaded.url);
+      } else {
+        message.error("The image could not be uploaded.");
+      }
+    } catch (error) {
+      setloading(false);
+      console.error(error);
+      message.error("The image could not be uploaded.");
+    }
   };
 
   const copy = () => {

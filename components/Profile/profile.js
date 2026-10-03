@@ -1,3 +1,4 @@
+import { compressImage } from "../../utils/compressImage";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import style from "../../styles/moduleCss/profile.module.css";
@@ -62,7 +63,7 @@ const Profile = ({ user }) => {
   const imgUpload = async (e) => {
     setIsLoadingimgS(true);
     const formData = new FormData();
-    formData.append("images", image);
+    formData.append("images", (await compressImage(image)).file);
     await fetch("https://paraglive-backend.vercel.app/api/image/upload-file", {
       method: "POST",
       body: formData,
@@ -83,12 +84,7 @@ const Profile = ({ user }) => {
       return;
     }
 
-    if (image.size >= 200000) {
-      setState({ ...state, limit: "Image size must be less than 200Kb" });
-    } else {
-      setState({ ...state, limit: "" });
-    }
-
+    // Oversized images are compressed to 50KB when uploaded.
     setState({ ...state, selected: "yes" });
 
     reader.onload = () => {

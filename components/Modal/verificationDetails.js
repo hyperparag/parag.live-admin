@@ -35,6 +35,55 @@ const VerificationDetails = ({ request, reload, setReload }) => {
       });
   };
 
+  const remove = () => {
+    Swal.fire({
+      title: "Delete this request permanently?",
+      text: "This also deletes the submitted ID photos. It cannot be undone.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it forever",
+    }).then((result) => {
+      if (!result.isConfirmed) return;
+
+      axios
+        .delete(
+          `https://paraglive-backend.vercel.app/api/verification/${request?._id}`,
+          {
+            headers: {
+              authorization: `Bearer ${usersStringfy}`,
+            },
+          },
+        )
+        .then((response) => {
+          if (response.data.status == "success") {
+            const removed = response.data.data?.imagesRemoved ?? 0;
+            Swal.fire(
+              "Deleted!",
+              `Request removed${removed ? ` along with ${removed} image(s)` : ""}.`,
+              "success",
+            );
+          } else {
+            Swal.fire(
+              "Could not delete",
+              response.data.message || "Please try again.",
+              "error",
+            );
+          }
+          setReload(!reload);
+          document.getElementById("my-modal-20").checked = false;
+        })
+        .catch((error) => {
+          Swal.fire(
+            "Could not delete",
+            error?.response?.data?.message || "Please try again.",
+            "error",
+          );
+        });
+    });
+  };
+
   const approve = () => {
     Swal.fire({
       title: "Approve this verification request?",
@@ -139,6 +188,19 @@ const VerificationDetails = ({ request, reload, setReload }) => {
                   </label>
                 </button>
               </>
+            )}
+            {/* Permanent removal, for clearing out fake requests once they have
+                been rejected. Only offered after a decision has been made, so a
+                pending request cannot be deleted by accident. */}
+            {request?.status && request?.status != "pending" && (
+              <button>
+                <label
+                  onClick={remove}
+                  className='bg-red-800 px-3 py-1 text-white cursor-pointer font-bold rounded'
+                >
+                  Delete Permanently
+                </label>
+              </button>
             )}
           </div>
         </div>

@@ -1,3 +1,4 @@
+import { compressImage } from "../../utils/compressImage";
 import React, { useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
@@ -89,12 +90,8 @@ const BlogDetails = ({ blog, setReload, reload, blogLoading }) => {
     const file = e.target.files[0];
     if (!file) return;
 
-    // Size limit 200KB
-    if (file.size >= 200000) {
-      setState({ ...state, limit: "Image size must be less than 200Kb" });
-    } else {
-      setState({ ...state, limit: "" });
-    }
+    // Oversized images are compressed to 50KB when uploaded.
+    setState({ ...state, limit: "" });
 
     const reader = new FileReader();
     reader.onload = () => {
@@ -141,10 +138,13 @@ const BlogDetails = ({ blog, setReload, reload, blogLoading }) => {
       // Upload image if selected
       if (image) {
         const formData = new FormData();
-        formData.append("images", image);
+        formData.append("images", (await compressImage(image)).file);
 
+        // This used /api/files/files, the dead AWS S3 route whose credentials
+        // are commented out in the backend env, so replacing a blog image
+        // silently did nothing.
         const uploadRes = await fetch(
-          "https://paraglive-backend.vercel.app/api/files/files",
+          "https://paraglive-backend.vercel.app/api/files2/files",
           {
             method: "POST",
             body: formData,
@@ -152,7 +152,10 @@ const BlogDetails = ({ blog, setReload, reload, blogLoading }) => {
         );
 
         const result = await uploadRes.json();
-        data.image = result.url;
+        const uploaded = Array.isArray(result)
+          ? { url: result[0] }
+          : (result.files || [])[0] || { url: (result.urls || [])[0] };
+        data.image = uploaded?.url ?? "";
       } else {
         data.image = "";
       }

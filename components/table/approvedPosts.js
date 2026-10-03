@@ -195,6 +195,7 @@ const ApprovedPosts = ({ setNewPost, datas }) => {
           .post(
             `https://paraglive-backend.vercel.app/api/products/deleteMany`,
             ids,
+            { headers: { authorization: `Bearer ${usersStringfy}` } },
           )
           .then((response) => {
             if (response.data.deletedCount) {
