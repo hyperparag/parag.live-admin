@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import DepositTable from "../table/depositTable";
 import { Input, Pagination } from "antd";
+import Cookies from "js-cookie";
 const { Search } = Input;
 
 const Deposit = ({ setnewUser }) => {
@@ -18,6 +19,7 @@ const Deposit = ({ setnewUser }) => {
     try {
       const response = await axios.get(
         `https://paraglive-backend.vercel.app/api/deposit?email=${email}&size=${pageSize}&page=${current}`,
+        { headers: { authorization: `Bearer ${Cookies.get("token")}` } },
       );
 
       setDeposits(response.data.deposits);

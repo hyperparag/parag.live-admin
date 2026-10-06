@@ -1,220 +1,155 @@
 import React, { useEffect, useState } from "react";
-import { Input, Table } from "antd";
-import style from "../../styles/moduleCss/dashboard.module.css";
+import { Input, Table, Tag } from "antd";
 import axios from "axios";
+import Cookies from "js-cookie";
 const { Search } = Input;
 
-const defaultExpandable = {
-  expandedRowRender: (record) => (
-    <div>
-      <div className='smallOrderTable2'>
-        <div>
-          <h6>
-            <strong className='text-black fw-bold'>User Email</strong> :{" "}
-            {record?.email}
-          </h6>
-          <h6>
-            <strong className='text-black fw-bold'>Date </strong> :{" "}
-            {record?.date}
-          </h6>
-          <h6>
-            <strong className='text-black fw-bold'>Status</strong> :{" "}
-            {record?.via}
-          </h6>
-
-          <h6>
-            <strong className='text-black fw-bold'>Amount</strong> :
-            <button className='bg-red-300 text-black px-2 border-0'>
-              ${record.amount}
-            </button>
-          </h6>
-        </div>
-      </div>
-    </div>
-  ),
+// Every kind of money movement the ledger records, with how to show it.
+export const KIND_LABELS = {
+  recharge: { label: "Credit purchase", color: "green" },
+  "admin-credit": { label: "Credit given by admin", color: "cyan" },
+  "ad-spend": { label: "Ad spend", color: "volcano" },
+  repost: { label: "Repost", color: "orange" },
+  "referral-bonus": { label: "Referral earning", color: "purple" },
+  "referral-convert": { label: "Earnings converted to credit", color: "blue" },
+  "earn-bonus": { label: "Earn bonus", color: "gold" },
 };
 
 const TableRecharge = () => {
-  const [bordered, setBordered] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [size, setSize] = useState("large");
-  const [expandable, setExpandable] = useState(defaultExpandable);
-  const [showHeader, setShowHeader] = useState(true);
-  const [hasData, setHasData] = useState(true);
-  const [tableLayout, setTableLayout] = useState(undefined);
-  const [ellipsis, setEllipsis] = useState(false);
-  const [yScroll, setYScroll] = useState(false);
-  const [xScroll, setXScroll] = useState(undefined);
+  const [rows, setRows] = useState([]);
+  const [total, setTotal] = useState(0);
   const [keyword, setKeyword] = useState("");
-  const [transaction, setTransaction] = useState([]);
+  const [kind, setKind] = useState("");
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
-  async function getUser() {
+  async function load() {
+    setLoading(true);
     try {
       const response = await axios.get(
-        `https://paraglive-backend.vercel.app/api/transaction?q=${keyword}`,
+        `https://paraglive-backend.vercel.app/api/transaction`,
         {
-          method: "GET",
+          params: { q: keyword, kind, page, size: pageSize },
+          headers: { authorization: `Bearer ${Cookies.get("token")}` },
         },
       );
-      const data = response.data.data;
-      setTransaction(data);
-      setLoading(false);
+      setRows(response.data.data || []);
+      setTotal(response.data.total || 0);
     } catch (error) {
-      setLoading(false);
       console.error(error);
+      setRows([]);
+      setTotal(0);
+    } finally {
+      setLoading(false);
     }
   }
 
   useEffect(() => {
-    setLoading(true);
-    getUser();
-  }, [keyword]);
-
-  const onSearch = (value) => setKeyword(value);
+    load();
+  }, [keyword, kind, page, pageSize]);
 
   const columns = [
     {
-      title: "Invoice",
-      width: 200,
-      dataIndex: "name",
-      key: "name",
-      fixed: "left",
+      title: "Date",
+      dataIndex: "createdAt",
+      key: "date",
+      render: (v) => (v ? new Date(v).toLocaleString() : "-"),
     },
     {
-      title: "Date",
-      dataIndex: "date",
-      width: 150,
-      key: "2",
+      title: "User",
+      dataIndex: "user",
+      key: "user",
     },
-
+    {
+      title: "Type",
+      dataIndex: "kind",
+      key: "kind",
+      render: (k) => {
+        const meta = KIND_LABELS[k] || { label: k, color: "default" };
+        return <Tag color={meta.color}>{meta.label}</Tag>;
+      },
+    },
     {
       title: "Amount",
       dataIndex: "amount",
-      key: "3",
-      width: 150,
+      key: "amount",
       sorter: (a, b) => a.amount - b.amount,
-      render: (_, { amount }) => (
-        <>
-          <button className='bg-green-300 text-black px-2 border-0'>
-            ${amount}
-          </button>
-        </>
+      render: (amount, { flow }) => (
+        <b className={flow === "debit" ? "text-red-600" : "text-green-700"}>
+          {flow === "debit" ? "-" : "+"}${Number(amount).toFixed(2)}
+        </b>
       ),
     },
     {
-      title: "Status",
-      dataIndex: "via",
-      key: "2",
-      width: 150,
-      render: (_, { via }) => (
-        <>
-          {via == "pending" ? (
-            <button className='bg-red-300 text-black px-2 border-0'>
-              {via}
-            </button>
-          ) : (
-            <button className='bg-green-300 text-black px-2 border-0'>
-              {via}
-            </button>
-          )}
-        </>
-      ),
-    },
-    {
-      title: "User Email",
-      dataIndex: "email",
-      width: 250,
-      key: "1",
-    },
-  ];
-
-  const columns2 = [
-    {
-      title: "Invoice",
-      width: 50,
-      dataIndex: "name",
-      key: "name",
-      // fixed: "left",
-      render: (_, { name }) => (
-        <>
-          <p className='text-xs text-black sm:px-2 border-0'>{name}</p>
-        </>
+      title: "Reference",
+      dataIndex: "invoice",
+      key: "invoice",
+      render: (invoice, { note }) => (
+        <span className='text-xs'>
+          {invoice}
+          {note ? ` · ${note}` : ""}
+        </span>
       ),
     },
   ];
 
-  const data = [];
-  const datr = transaction?.map((a) =>
-    data.push({
-      key: `${a._id}`,
-      name: `${a.invoice}`,
-      date: `${a.date}`,
-      via: `${a.isCompleted}`,
-      amount: `${a?.amount}`,
-      email: `${a?.userId?.email}`,
-    }),
-  );
-
-  const scroll = {};
-  if (yScroll) {
-    scroll.y = 840;
-  }
-  if (xScroll) {
-    scroll.x = "100vw";
-  }
-  const tableColumns = columns2.map((item) => ({
-    ...item,
-    ellipsis,
+  const data = rows.map((a) => ({
+    key: a._id,
+    createdAt: a.createdAt,
+    user: a?.userId?.email || "-",
+    kind: a.kind,
+    flow: a.flow,
+    amount: a.amount,
+    invoice: a.invoice,
+    note: a.note,
   }));
-  if (xScroll === "fixed") {
-    tableColumns[0].fixed = true;
-    tableColumns[tableColumns.length - 1].fixed = "right";
-  }
-
-  const tableProps = {
-    bordered,
-    size,
-    expandable,
-    showHeader,
-    scroll,
-    tableLayout,
-  };
 
   return (
     <div className='w-full'>
-      <Search
-        placeholder='invoice , email or date'
-        onSearch={onSearch}
-        enterButton
-      />
-      <br></br>
-      <br></br>
+      <div className='flex flex-col sm:flex-row gap-2 mb-4'>
+        <Search
+          placeholder='user email or invoice'
+          onSearch={(v) => {
+            setPage(1);
+            setKeyword(v);
+          }}
+          allowClear
+          enterButton
+        />
+        <select
+          className='bg-white border rounded p-2 text-black'
+          value={kind}
+          onChange={(e) => {
+            setPage(1);
+            setKind(e.target.value);
+          }}
+        >
+          <option value=''>All types</option>
+          {Object.entries(KIND_LABELS).map(([k, v]) => (
+            <option key={k} value={k}>
+              {v.label}
+            </option>
+          ))}
+        </select>
+      </div>
 
-      {loading ? (
-        <img className='block m-auto w-24 ' src='/upload.gif' />
-      ) : (
-        <>
-          {" "}
-          <Table
-            className={style.tableLG}
-            columns={columns}
-            dataSource={data}
-            scroll={{
-              x: 1500,
-              y: 800,
-            }}
-            pagination={{ pageSize: 8 }}
-          />
-          <Table
-            {...tableProps}
-            pagination={{ pageSize: 8 }}
-            columns={tableColumns}
-            dataSource={hasData ? data : []}
-            scroll={scroll}
-            className={style.tableSM}
-          />
-        </>
-      )}
+      <Table
+        loading={loading}
+        columns={columns}
+        dataSource={data}
+        scroll={{ x: 700 }}
+        pagination={{
+          current: page,
+          pageSize,
+          total,
+          showSizeChanger: true,
+          onChange: (p, s) => {
+            setPage(p);
+            setPageSize(s);
+          },
+        }}
+      />
     </div>
   );
 };

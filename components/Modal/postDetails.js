@@ -205,7 +205,7 @@ const PostDetails = ({ id, setReload, reload }) => {
             <div className='modal-action'>
               <label
                 htmlFor='my-modal-5'
-                className='bg-blue-400 px-3 py-1 text-white font-bold rounded cursor-pointer'
+                className='bg-blue-700 px-3 py-1 text-white font-bold rounded cursor-pointer'
               >
                 Cancel
               </label>

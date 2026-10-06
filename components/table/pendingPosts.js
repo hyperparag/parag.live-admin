@@ -286,7 +286,7 @@ const ApprovedPosts = ({ setNewPost, datas }) => {
       width: 160,
       render: (_, { reason }) => {
         if (!reason || reason === "undefined" || reason === "null") {
-          return <span className='text-gray-400'>&mdash;</span>;
+          return <span className='text-gray-600'>&mdash;</span>;
         }
         const label =
           reason === "duplicate"

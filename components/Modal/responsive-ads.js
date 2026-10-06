@@ -33,14 +33,13 @@ const UpdateResponsiveAds = ({ setReload, reload, ads }) => {
       const formData = new FormData();
       formData.append("images", (await compressImage(selectedFile)).file);
 
-      await fetch("https://paraglive-backend.vercel.app/api/files2/files", {
-        method: "POST",
-        body: formData,
-      })
-        .then((res) => res.json())
-        .then((result) => {
-          data.image = result?.[0];
-        });
+      // The upload API answers { urls, files }; reading result[0] gave
+      // undefined, so a new banner image was silently never saved.
+      const result = await fetch(
+        "https://paraglive-backend.vercel.app/api/files2/files",
+        { method: "POST", body: formData },
+      ).then((res) => res.json());
+      data.image = Array.isArray(result) ? result[0] : (result.urls || [])[0];
     }
 
     const newData = {};
@@ -92,7 +91,7 @@ const UpdateResponsiveAds = ({ setReload, reload, ads }) => {
                   className='w-full h-full object-cover'
                 />
               ) : (
-                <div className='w-full h-full flex items-center justify-center text-gray-400'>
+                <div className='w-full h-full flex items-center justify-center text-gray-600'>
                   <FaImage size={48} />
                 </div>
               )}

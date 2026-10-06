@@ -90,8 +90,8 @@ const Links = () => {
         if you dont wanna update the links , then keep blank the inputs
       </p>
       <div className='bg-white'>
-        <div className='m-auto w-5/6'>
-          <label className='flex justify-between sm:justify-center p-2 sm:px-24'>
+        <div className='m-auto w-full sm:w-5/6'>
+          <label className='flex flex-col sm:flex-row justify-between sm:justify-center p-2 sm:px-24'>
             <h1 className=' sm:w-2/6 w-full sm:text-xl text-sm font-bold'>
               {" "}
               Shemale Escorts :{" "}
@@ -109,7 +109,7 @@ const Links = () => {
             />
           </label>
 
-          <label className='flex justify-between sm:justify-center p-2 sm:px-24 sm:py-10'>
+          <label className='flex flex-col sm:flex-row justify-between sm:justify-center p-2 sm:px-24 sm:py-10'>
             <h1 className=' sm:w-2/6 w-full sm:text-xl  text-sm font-bold'>
               {" "}
               Meet & Fuck :{" "}
@@ -126,7 +126,7 @@ const Links = () => {
               className={`${style.editableInputs} , bg-gray-50  input-bordered input-warning  sm:w-2/6 w-full `}
             />
           </label>
-          <label className='flex justify-between sm:justify-center p-2 sm:px-24'>
+          <label className='flex flex-col sm:flex-row justify-between sm:justify-center p-2 sm:px-24'>
             <h1 className=' sm:w-2/6 w-full sm:text-xl  text-sm font-bold'>
               {" "}
               Live Escorts :{" "}
@@ -161,7 +161,7 @@ const Links = () => {
               className={`${style.editableInputs} , bg-gray-50  input-bordered input-warning  sm:w-2/6 w-full `}
             />
           </label>*/}
-          <label className='flex justify-between sm:justify-center p-2 sm:px-24'>
+          <label className='flex flex-col sm:flex-row justify-between sm:justify-center p-2 sm:px-24'>
             <button onClick={() => update()} className={style.updateButton}>
               Update
             </button>

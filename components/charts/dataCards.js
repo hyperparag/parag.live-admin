@@ -9,7 +9,7 @@ const DataCards = ({ data }) => {
           <Card
             title="Total Users"
             bordered={false}
-            className="bg-red-400 text-white font-bold text-2xl"
+            className="bg-red-700 text-white data-card font-bold text-2xl"
           >
             {data?.allUsers} <small>users</small>
           </Card>
@@ -18,7 +18,7 @@ const DataCards = ({ data }) => {
           <Card
             title="Total Credits"
             bordered={false}
-            className="bg-cyan-500 text-white font-bold text-2xl  sm:mt-0 mt-10"
+            className="bg-cyan-800 text-white data-card font-bold text-2xl  sm:mt-0 mt-10"
           >
             ${data?.allCredits?.toFixed()} <small>dollars</small>
           </Card>
@@ -27,7 +27,7 @@ const DataCards = ({ data }) => {
           <Card
             title="Blogs"
             bordered={false}
-            className="bg-purple-500 text-white font-bold text-2xl sm:mt-0 mt-10"
+            className="bg-purple-700 text-white data-card font-bold text-2xl sm:mt-0 mt-10"
           >
             {data?.allBlogs} <small>blogs</small>
           </Card>
@@ -37,7 +37,7 @@ const DataCards = ({ data }) => {
           <Card
             title="Posts"
             bordered={false}
-            className="bg-blue-400 text-white font-bold text-2xl  mt-10"
+            className="bg-blue-700 text-white data-card font-bold text-2xl  mt-10"
           >
             {data?.allPost} <small>posts</small>
           </Card>
@@ -46,7 +46,7 @@ const DataCards = ({ data }) => {
           <Card
             title="Premium Posts"
             bordered={false}
-            className="bg-green-400 text-white font-bold text-2xl  mt-10"
+            className="bg-green-700 text-white data-card font-bold text-2xl  mt-10"
           >
             {data?.premiumPost} <small>posts</small>
           </Card>
@@ -56,7 +56,7 @@ const DataCards = ({ data }) => {
           <Card
             title="Today Posts"
             bordered={false}
-            className="bg-yellow-800 text-white font-bold text-2xl mt-10"
+            className="bg-yellow-900 text-white data-card font-bold text-2xl mt-10"
           >
             {data?.today} <small>posts</small>
           </Card>
@@ -66,7 +66,7 @@ const DataCards = ({ data }) => {
           <Card
             title="Today Transactions"
             bordered={false}
-            className="bg-yellow-500 text-white font-bold text-2xl mt-10"
+            className="bg-amber-700 text-white data-card font-bold text-2xl mt-10"
           >
             {data?.allTodayTrans} <small>transactions</small>
           </Card>
@@ -76,7 +76,7 @@ const DataCards = ({ data }) => {
           <Card
             title="Today Transactions Amount"
             bordered={false}
-            className="bg-fuchsia-500 text-white font-bold text-2xl mt-10"
+            className="bg-fuchsia-700 text-white data-card font-bold text-2xl mt-10"
           >
             ${data?.todayTransAmount} <small>dollars</small>
           </Card>
@@ -85,7 +85,7 @@ const DataCards = ({ data }) => {
           <Card
             title="Total Transactions Amount"
             bordered={false}
-            className="bg-gray-500 text-white font-bold text-2xl mt-10"
+            className="bg-gray-700 text-white data-card font-bold text-2xl mt-10"
           >
             ${data?.totalTransctions} <small>dollars</small>
           </Card>

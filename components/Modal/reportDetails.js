@@ -92,7 +92,7 @@ const ReportDetails = ({ report, reload, setReload }) => {
               <>
                 {" "}
                 {report?.reportedPost?.[0]?.isPremium ? (
-                  <button className='bg-green-400 px-1 text-white'>
+                  <button className='bg-green-700 px-1 text-white'>
                     Paid Ad{" "}
                   </button>
                 ) : (
@@ -270,7 +270,7 @@ const ReportDetails = ({ report, reload, setReload }) => {
           <div className='modal-action'>
             <label
               htmlFor='my-modal-16'
-              className='bg-blue-400 px-3 py-1 text-white font-bold rounded cursor-pointer'
+              className='bg-blue-700 px-3 py-1 text-white font-bold rounded cursor-pointer'
               onClick={() => read(report?._id)}
             >
               Cancel

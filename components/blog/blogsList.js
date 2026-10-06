@@ -65,7 +65,6 @@ const BlogsList = ({ setBlogId, reload, setBlogLoading }) => {
   const [newPosts, setNewPosts] = useState([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [category, setCategory] = useState("");
-  const [subCategory, setSubCategory] = useState("");
   const [keyword, setKeyWord] = useState("");
   const [reloads, setReload] = useState(false);
   const [current, setCurrent] = useState(1);
@@ -75,7 +74,7 @@ const BlogsList = ({ setBlogId, reload, setBlogLoading }) => {
   async function getUser() {
     try {
       const response = await axios.get(
-        `https://paraglive-backend.vercel.app/api/blogs/admin?page=${current}&q=${keyword}&cat=${category}&subCat=${subCategory}`,
+        `https://paraglive-backend.vercel.app/api/blogs/admin?page=${current}&q=${keyword}&cat=${category}`,
         {
           method: "GET",
           headers: {
@@ -100,9 +99,7 @@ const BlogsList = ({ setBlogId, reload, setBlogLoading }) => {
   useEffect(() => {
     setLoading(true);
     getUser();
-  }, [current, category, subCategory, keyword, reloads]);
-
-  const subcategory = categoryFilter.find((a) => a.name == category);
+  }, [current, category, keyword, reloads]);
 
   const deleteUser = (id) => {
     Swal.fire({
@@ -130,6 +127,33 @@ const BlogsList = ({ setBlogId, reload, setBlogLoading }) => {
       }
     });
   };
+  // Push a post back to the top of the public blog list (this also clears any
+  // pending schedule, so a scheduled post goes live now).
+  const repostBlog = (id) => {
+    Swal.fire({
+      title: "Repost this blog?",
+      text: "It will move to the top of the blog list.",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Yes, repost",
+    }).then((result) => {
+      if (!result.isConfirmed) return;
+      axios
+        .post(
+          `https://paraglive-backend.vercel.app/api/blogs/repost/${id}`,
+          {},
+          { headers: { authorization: `Bearer ${usersStringfy}` } },
+        )
+        .then((response) => {
+          if (response.data.status == "success") {
+            Swal.fire("Reposted!", "The blog is back on top.", "success");
+          }
+          setReload(!reloads);
+        })
+        .catch(() => Swal.fire("Failed", "Could not repost the blog.", "error"));
+    });
+  };
+
   const findData = async (id) => {
     setBlogLoading(true);
     const response = await axios.get(
@@ -178,6 +202,20 @@ const BlogsList = ({ setBlogId, reload, setBlogLoading }) => {
       dataIndex: "status",
       key: "8",
       width: 100,
+      render: (status, { scheduledAt }) =>
+        scheduledAt ? (
+          <span className='text-amber-600 font-semibold'>
+            Scheduled {scheduledAt}
+          </span>
+        ) : (
+          status
+        ),
+    },
+    {
+      title: "Reposts",
+      dataIndex: "repostCount",
+      key: "9",
+      width: 70,
     },
     {
       title: "Created Time",
@@ -196,16 +234,22 @@ const BlogsList = ({ setBlogId, reload, setBlogLoading }) => {
       title: "Action",
       key: "operation",
       fixed: "right",
-      width: 80,
+      width: 150,
       render: (_, { id }) => (
-        <>
+        <div className='flex gap-2'>
+          <button
+            className='bg-blue-700 text-white px-2 border-0'
+            onClick={() => repostBlog(id)}
+          >
+            Repost
+          </button>
           <button
             className='bg-red-600 text-white px-2 border-0'
             onClick={() => deleteUser(id)}
           >
             Delete
           </button>
-        </>
+        </div>
       ),
     },
   ];
@@ -234,16 +278,22 @@ const BlogsList = ({ setBlogId, reload, setBlogLoading }) => {
       title: "Action",
       key: "operation",
       fixed: "right",
-      width: 50,
+      width: 120,
       render: (_, { id }) => (
-        <>
+        <div className='flex gap-1'>
+          <button
+            className='bg-blue-700 text-white px-2 border-0'
+            onClick={() => repostBlog(id)}
+          >
+            Repost
+          </button>
           <button
             className='bg-red-600 text-white px-2 border-0'
             onClick={() => deleteUser(id)}
           >
             Delete
           </button>
-        </>
+        </div>
       ),
     },
   ];
@@ -255,8 +305,13 @@ const BlogsList = ({ setBlogId, reload, setBlogLoading }) => {
       name: `${a.title.slice(0, 25)}`,
 
       email: `${a?.writer}`,
-      category: `${a?.category} > ${a?.subCategory}`,
+      category: `${a?.category}`,
       status: `${a?.status}`,
+      repostCount: a?.repostCount || 0,
+      scheduledAt:
+        a?.publishAt && new Date(a.publishAt).getTime() > Date.now()
+          ? new Date(a.publishAt).toLocaleString()
+          : "",
       createdAt: `${
         a?.createdAt?.split("T")[0] +
         " " +
@@ -308,13 +363,13 @@ const BlogsList = ({ setBlogId, reload, setBlogLoading }) => {
           .post(
             `https://paraglive-backend.vercel.app/api/blogs/deleteMany`,
             ids,
+            { headers: { authorization: `Bearer ${usersStringfy}` } },
           )
           .then((response) => {
             if (response.data.deletedCount) {
               Swal.fire("Deleted!", "Your file has been deleted.", "success");
             }
             setReload(!reloads);
-            setStatus("");
             setCategory("");
           });
       }
@@ -335,9 +390,11 @@ const BlogsList = ({ setBlogId, reload, setBlogLoading }) => {
     }).then((result) => {
       if (result.isConfirmed) {
         axios
-          .post(`https://paraglive-backend.vercel.app/api/blogs/updatedMany`, {
-            data,
-          })
+          .post(
+            `https://paraglive-backend.vercel.app/api/blogs/updatedMany`,
+            { data },
+            { headers: { authorization: `Bearer ${usersStringfy}` } },
+          )
           .then((response) => {
             if (response.data.status == "success") {
               Swal.fire(
@@ -348,7 +405,6 @@ const BlogsList = ({ setBlogId, reload, setBlogLoading }) => {
             }
 
             setReload(!reloads);
-            setStatus("");
             setCategory("");
           });
       }
@@ -371,9 +427,8 @@ const BlogsList = ({ setBlogId, reload, setBlogLoading }) => {
         axios
           .post(
             `https://paraglive-backend.vercel.app/api/blogs/updatedpublishMany`,
-            {
-              data,
-            },
+            { data },
+            { headers: { authorization: `Bearer ${usersStringfy}` } },
           )
           .then((response) => {
             if (response.data.status == "success") {
@@ -385,7 +440,6 @@ const BlogsList = ({ setBlogId, reload, setBlogLoading }) => {
             }
 
             setReload(!reloads);
-            setStatus("");
             setCategory("");
           });
       }
@@ -409,7 +463,7 @@ const BlogsList = ({ setBlogId, reload, setBlogLoading }) => {
           onClick={updatedpublishMany}
           disabled={!hasSelected}
           loading={loading}
-          className='bg-green-400  px-5 text-white  border rounded'
+          className='bg-green-700  px-5 text-white  border rounded'
           size='medium'
         >
           {" "}
@@ -424,7 +478,7 @@ const BlogsList = ({ setBlogId, reload, setBlogLoading }) => {
           onClick={updateMany}
           disabled={!hasSelected}
           loading={loading}
-          className='bg-blue-400 px-5 text-white  border rounded'
+          className='bg-blue-700 px-5 text-white  border rounded'
           size='medium'
         >
           {" "}
@@ -456,10 +510,6 @@ const BlogsList = ({ setBlogId, reload, setBlogLoading }) => {
     setCurrent(1);
   };
 
-  const changeSubCategory = (e) => {
-    setSubCategory(e.target.value);
-    setCurrent(1);
-  };
   const onSearch = (e) => {
     setKeyWord(e);
   };
@@ -500,20 +550,6 @@ const BlogsList = ({ setBlogId, reload, setBlogLoading }) => {
             <option value={" "}>All</option>
             {categoryFilter?.map((a) => (
               <option value={a.name}>{a.name}</option>
-            ))}
-          </select>
-        </label>
-        <label>
-          <select
-            className=' bg-white border rounded p-1 sm:p-2'
-            onChange={(e) => changeSubCategory(e)}
-          >
-            <option value={""}>--Select Sub Category--</option>
-            <option value={" "}>All</option>
-            {subcategory?.children?.map((a) => (
-              <>
-                <option value={a.name}>{a.name}</option>
-              </>
             ))}
           </select>
         </label>

@@ -15,6 +15,7 @@ const AddCredit = ({ user, setReload, reload }) => {
     setLoading(true);
     const id = user?.userId ?? user?._id;
     const number = value.target.num.value;
+    const form = value.target;
     Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
@@ -24,26 +25,38 @@ const AddCredit = ({ user, setReload, reload }) => {
       cancelButtonColor: "#d33",
       confirmButtonText: "Yes, Added it!",
     }).then((result) => {
-      if (result.isConfirmed) {
-        axios
-          .patch(
-            `https://paraglive-backend.vercel.app/api/users/add-credit/${id}?isUpdate=${
-              user?.userId ? `${user?._id}` : ""
-            }`,
-            {
-              credit: number,
-            },
-          )
-          .then((response) => {
-            if (response.data.status == "success") {
-              Swal.fire("Added!", "You have added credit", "success", ``);
-              value.target.reset();
-            }
-            setLoading(false);
-            setReload(!reload);
-            global.document.getElementById("my-modal-21").checked = false;
-          });
+      if (!result.isConfirmed) {
+        setLoading(false);
+        return;
       }
+      axios
+        .patch(
+          `https://paraglive-backend.vercel.app/api/users/add-credit/${id}?isUpdate=${
+            user?.userId ? `${user?._id}` : ""
+          }`,
+          {
+            credit: number,
+          },
+          { headers: { authorization: `Bearer ${usersStringfy}` } },
+        )
+        .then((response) => {
+          if (response.data.status == "success") {
+            Swal.fire("Added!", "You have added credit", "success", ``);
+            form.reset();
+            global.document.getElementById("my-modal-21").checked = false;
+          }
+        })
+        .catch((error) => {
+          Swal.fire(
+            "Could not add credit",
+            error?.response?.data?.message || "Please try again.",
+            "error",
+          );
+        })
+        .finally(() => {
+          setLoading(false);
+          setReload(!reload);
+        });
     });
   };
 
@@ -76,22 +89,34 @@ const AddCredit = ({ user, setReload, reload }) => {
             type="number"
             onSearch={onSearch}
           />*/}
-          <form className='m-auto flex justify-center mt-2' onSubmit={onSearch}>
+          {user?.userId && (
+            <p className='text-black text-center'>
+              Deposit: $ {user?.amount} ({user?.provider}) · TRX {user?.trxid}
+              {user?.referralCode ? ` · Referral ${user.referralCode}` : ""}
+            </p>
+          )}
+          <form
+            key={user?._id}
+            className='m-auto flex justify-center mt-2'
+            onSubmit={onSearch}
+          >
             <input
               name='num'
+              defaultValue={user?.userId ? user?.amount : ""}
+              placeholder='Credit to add'
               className='w-[150px] p-1 bg-gray-200 text-red-600 font-bold'
             />
             {laoding ? (
               <button
                 type='submit'
-                className='bg-green-500 text-white p-1 px-7 font-bold'
+                className='bg-green-700 text-white p-1 px-7 font-bold'
               >
                 <img className='w-[20px]' src='/upload.gif' />
               </button>
             ) : (
               <button
                 type='submit'
-                className='bg-green-500 text-white p-1 px-3 font-bold'
+                className='bg-green-700 text-white p-1 px-3 font-bold'
               >
                 Submit
               </button>
@@ -102,7 +127,7 @@ const AddCredit = ({ user, setReload, reload }) => {
           <br />
           <label
             htmlFor='my-modal-21'
-            className='bg-blue-400 px-3 py-1 mr-5 text-white cursor-pointer font-bold rounded'
+            className='bg-blue-700 px-3 py-1 mr-5 text-white cursor-pointer font-bold rounded'
           >
             Cancel
           </label>

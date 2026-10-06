@@ -10,7 +10,7 @@ import Cookies from "js-cookie";
 import Swal from "sweetalert2";
 import axios from "axios";
 import { PlusOutlined, UploadOutlined } from "@ant-design/icons";
-import { Modal, Upload, message, Button } from "antd";
+import { Modal, Upload, message, Button, DatePicker, Radio } from "antd";
 import { useRouter } from "next/router";
 
 const modules = {
@@ -41,9 +41,12 @@ const initialState = {
   title: "",
   writer: "",
   category: "",
-  subCategory: "",
   desc: "",
   image: "",
+  // Alt text for the cover image (accessibility + SEO).
+  altText: "",
+  // null posts immediately; an ISO date schedules the post for later.
+  publishAt: null,
   limit: "",
   permalink: "",
   metaDesc: "",
@@ -72,6 +75,7 @@ const AddBlog = () => {
   const [imaglink, setImageLink] = useState("");
 
   const [fileList, setFileList] = useState([]);
+  const [scheduleLater, setScheduleLater] = useState(false);
 
   // const [desc, setDescription] = useState("");
   const editorRef = useRef(null);
@@ -113,39 +117,54 @@ const AddBlog = () => {
     if (fileList.length == 0) {
       data["image"] = "avater";
     } else {
-      const formData = new FormData();
-      formData.append("images", (await compressImage(fileList[0].originFileObj)).file);
-      await fetch("https://paraglive-backend.vercel.app/api/files2/files", {
-        method: "POST",
-        body: formData,
-      })
-        .then((res) => res.json())
-        .then((result) => {
-          data["image"] = result?.[0];
-        });
+      try {
+        const formData = new FormData();
+        formData.append(
+          "images",
+          (await compressImage(fileList[0].originFileObj)).file,
+        );
+        const res = await fetch(
+          "https://paraglive-backend.vercel.app/api/files2/files",
+          { method: "POST", body: formData },
+        );
+        if (!res.ok) throw new Error("upload failed");
+        const result = await res.json();
+        // The upload API answers { urls, files }. This used to read result[0],
+        // which is undefined on that shape, so every blog was saved with no
+        // image URL and showed a broken picture.
+        const uploaded = Array.isArray(result)
+          ? result[0]
+          : (result.urls || [])[0] || (result.files || [])[0]?.url;
+        if (!uploaded) throw new Error("no url returned");
+        data["image"] = uploaded;
+      } catch (error) {
+        console.error(error);
+        setIsLoadingimgS(false);
+        message.error("The image could not be uploaded. Please try again.");
+        return;
+      }
     }
 
     setIsLoadingimgS(false);
     data["writer"] = user?.firstName + user?.lastName;
+    data["publishAt"] = scheduleLater && state.publishAt ? state.publishAt : null;
+    delete data.country;
 
-    await Promise.all([
-      axios.post("https://paraglive-backend.vercel.app/api/blogs", data, {
-        headers: {
-          "content-type": "application/json",
-          authorization: `Bearer ${usersStringfy}`,
-        },
-      }),
-      axios.post(
-        "https://skipthegame-live-backend.vercel.app/api/blogs",
-        data,
-        {
-          headers: {
-            "content-type": "application/json",
-            authorization: `Bearer ${usersStringfy}`,
-          },
-        },
-      ),
-    ]).then(([response]) => {
+    const headers = {
+      "content-type": "application/json",
+      authorization: `Bearer ${usersStringfy}`,
+    };
+
+    // The second site mirrors the blog; it must not block or fail the post.
+    axios
+      .post("https://skipthegame-live-backend.vercel.app/api/blogs", data, {
+        headers,
+      })
+      .catch(() => {});
+
+    await axios
+      .post("https://paraglive-backend.vercel.app/api/blogs", data, { headers })
+      .then((response) => {
       setIsLoadingimgS(false);
       if (response.data.status == "success") {
         Swal.fire({
@@ -165,13 +184,19 @@ const AddBlog = () => {
           category: "",
           desc: "",
           image: "",
+          altText: "",
+          publishAt: null,
           limit: "",
           metaDesc: "",
           permalink: "",
           metaKey: "",
         });
       }
-    });
+    })
+      .catch(() => {
+        setIsLoadingimgS(false);
+        message.error("The blog could not be saved.");
+      });
   };
 
   const handleCancel = () => {
@@ -280,7 +305,7 @@ const AddBlog = () => {
 
             {imaglink ? (
               <button
-                className='bg-sky-400 text-white text-sm px-2'
+                className='bg-sky-700 text-white text-sm px-2'
                 onClick={() => copy()}
               >
                 Copy
@@ -288,12 +313,12 @@ const AddBlog = () => {
             ) : (
               <>
                 {loading ? (
-                  <button className='bg-sky-400 text-sm text-white px-2'>
+                  <button className='bg-sky-700 text-sm text-white px-2'>
                     Loading URL
                   </button>
                 ) : (
                   <button
-                    className='bg-sky-400 text-white text-sm  px-2'
+                    className='bg-sky-700 text-white text-sm  px-2'
                     onClick={() => upload()}
                   >
                     Genarate URL
@@ -373,6 +398,24 @@ const AddBlog = () => {
         </label>
         <br />
         <br />
+        <label className=''>
+          Image Alt Text : <br />
+          <input
+            type='text'
+            value={state.altText}
+            maxLength={150}
+            placeholder='Describe the cover image (for accessibility and SEO)'
+            className='input input-bordered w-full bg-white border'
+            onChange={(e) =>
+              dispatch({
+                type: "altText",
+                payload: e.target.value,
+              })
+            }
+          />
+        </label>
+        <br />
+        <br />
         <label>
           Category : <br />
           <select
@@ -408,6 +451,46 @@ const AddBlog = () => {
             }
           />
         </label>
+        <div className='mt-4 mb-4'>
+          <p className='mb-1'>Schedule Post :</p>
+          <Radio.Group
+            value={scheduleLater}
+            onChange={(e) => {
+              setScheduleLater(e.target.value);
+              if (!e.target.value) {
+                setState((prev) => ({ ...prev, publishAt: null }));
+              }
+            }}
+            options={[
+              { label: "Post now", value: false },
+              { label: "Schedule for later", value: true },
+            ]}
+          />
+          {scheduleLater && (
+            <div className='mt-2'>
+              <DatePicker
+                showTime={{ format: "HH:mm" }}
+                format='YYYY-MM-DD HH:mm'
+                placeholder='Pick a date and time'
+                disabledDate={(current) =>
+                  current && current.endOf("day").valueOf() < Date.now()
+                }
+                onChange={(value) =>
+                  setState((prev) => ({
+                    ...prev,
+                    publishAt: value ? value.toISOString() : null,
+                  }))
+                }
+              />
+              {state.publishAt && (
+                <p className='text-xs mt-1 font-normal'>
+                  Goes live on {new Date(state.publishAt).toLocaleString()}. It
+                  stays hidden from the site until then.
+                </p>
+              )}
+            </div>
+          )}
+        </div>
         {imagLoading == true ? (
           <button className={style.editButton}>
             <img width={40} src='/upload.gif' />

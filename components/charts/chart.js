@@ -97,14 +97,14 @@ const Chart = ({chart}) => {
 
   return (
     <div className="sm:m-5 m-0">
-      <h1 className="text-xs sm:text-2xl text-gray-400 font-bold">
+      <h1 className="text-xs sm:text-2xl text-gray-800 font-bold">
         Posts of the year :
       </h1>
       <div>
         <Bar data={lineData2} options={lineOptions} width={778} height={308} />
       </div>
 
-      <h1 className="text-xs sm:text-2xl text-gray-400 font-bold mt-24">
+      <h1 className="text-xs sm:text-2xl text-gray-800 font-bold mt-24">
         Recharge of the year :
       </h1>
       <div>

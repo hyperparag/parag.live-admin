@@ -129,3 +129,209 @@ html {
 .ant-layout-sider {
   background: rgb(255, 255, 255) !important;
 }
+
+
+/* ===================== Contrast fixes (light theme) ===================== */
+body {
+  color: #111827;
+}
+.icons {
+  color: #0e7490 !important;
+}
+.ant-menu-item,
+.ant-menu-submenu-title,
+.ant-menu-title-content {
+  color: #111827 !important;
+  font-weight: 600;
+}
+.ant-menu-item-selected {
+  background: #cffafe !important;
+  color: #000 !important;
+}
+.ant-menu-item:hover,
+.ant-menu-submenu-title:hover {
+  color: #000 !important;
+}
+.ant-menu-submenu-arrow {
+  color: #111827 !important;
+}
+.ant-input-search-button {
+  background-color: #0369a1 !important;
+  color: #fff !important;
+}
+.ant-btn-primary {
+  background-color: #d10f0f;
+  color: #fff;
+}
+.ant-btn-default,
+.ant-btn-default:not(:disabled):hover {
+  color: #111827;
+  border-color: #6b7280;
+  font-weight: 600;
+}
+input::placeholder,
+textarea::placeholder,
+.ant-input::placeholder,
+.ant-picker-input > input::placeholder,
+.ant-select-selection-placeholder {
+  color: #6b7280 !important;
+  opacity: 1 !important;
+}
+.ant-input,
+.ant-input-affix-wrapper,
+.ant-select-selection-item,
+.ant-picker-input > input,
+input.input,
+textarea {
+  color: #111827;
+}
+.ant-table-thead > tr > th {
+  background: #e5e7eb !important;
+  color: #111827 !important;
+  font-weight: 700 !important;
+}
+.ant-table-tbody > tr > td {
+  color: #111827;
+}
+.ant-table-expanded-row > td,
+.ant-table-expanded-row p,
+.ant-table-expanded-row span,
+.ant-table-expanded-row div {
+  color: #111827;
+}
+.ant-pagination .ant-pagination-item a,
+.ant-pagination .ant-pagination-item-link,
+.ant-pagination-total-text {
+  color: #111827;
+  font-weight: 600;
+}
+.ant-pagination .ant-pagination-item-active {
+  border-color: #0369a1;
+}
+.ant-pagination .ant-pagination-item-active a {
+  color: #0369a1;
+}
+.ant-tag {
+  font-weight: 600;
+  font-size: 13px;
+}
+.ant-card-head-title {
+  color: inherit;
+  font-weight: 700;
+}
+.data-card.ant-card .ant-card-head,
+.data-card.ant-card .ant-card-body {
+  color: #fff;
+}
+.data-card.ant-card .ant-card-head-title {
+  color: #fff;
+}
+.modal-box {
+  color: #111827;
+}
+.modal-box label,
+.modal-box p,
+.modal-box span,
+.modal-box h1,
+.modal-box h2,
+.modal-box h3 {
+  color: inherit;
+}
+.badge-success {
+  background-color: #15803d !important;
+  border-color: #15803d !important;
+  color: #fff !important;
+}
+.badge-error {
+  background-color: #b91c1c !important;
+  border-color: #b91c1c !important;
+  color: #fff !important;
+}
+.text-gray-300,
+.text-gray-400 {
+  color: #4b5563 !important;
+}
+.text-gray-500 {
+  color: #374151 !important;
+}
+
+/* ===================== Mobile / responsive ===================== */
+html,
+body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+.ant-table-wrapper {
+  overflow-x: auto;
+  max-width: 100%;
+}
+img {
+  max-width: 100%;
+}
+.admin-sider-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 1000;
+}
+.admin-sider-mobile.ant-layout-sider-collapsed {
+  flex: 0 0 0 !important;
+  max-width: 0 !important;
+  min-width: 0 !important;
+  width: 0 !important;
+}
+.admin-sider-mobile:not(.ant-layout-sider-collapsed) {
+  width: 240px !important;
+  max-width: 240px !important;
+  min-width: 240px !important;
+  flex: 0 0 240px !important;
+}
+.ant-layout-header .trigger {
+  padding: 0 16px;
+}
+.ant-layout-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+@media only screen and (max-width: 768px) {
+  .ant-layout-content {
+    padding: 6px !important;
+  }
+  .modal-box {
+    width: 95vw !important;
+    max-width: 95vw !important;
+    max-height: 92vh !important;
+    height: auto !important;
+    overflow-y: auto !important;
+    padding: 12px !important;
+  }
+  .ant-table-thead > tr > th,
+  .ant-table-tbody > tr > td {
+    padding: 8px !important;
+    font-size: 13px;
+  }
+  .ant-pagination {
+    flex-wrap: wrap;
+    row-gap: 6px;
+  }
+  .ant-input-search,
+  .ant-input-group-wrapper {
+    width: 100% !important;
+  }
+  .ant-upload-list-item-container {
+    width: 100px !important;
+    height: 100px !important;
+  }
+  .data-card.ant-card {
+    font-size: 20px;
+  }
+  .ant-modal {
+    max-width: 95vw !important;
+  }
+  canvas {
+    max-width: 100% !important;
+    height: auto !important;
+  }
+}

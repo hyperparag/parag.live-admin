@@ -1,5 +1,12 @@
+/* Scales to the modal and keeps the picture's own proportions, whatever size
+   was uploaded. */
 .image{
-    width: 50%;
+    display: block;
+    width: 100%;
+    max-width: 480px;
+    max-height: 320px;
+    height: auto;
+    object-fit: contain;
     margin: auto;
 }
 
@@ -23,7 +30,7 @@
 .imageContainer img{
     width: 100%;
     height: 250px;
-
+    object-fit: contain;
 }
 .labels{
     color: black;

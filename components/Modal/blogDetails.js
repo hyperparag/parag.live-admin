@@ -6,6 +6,7 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import Swal from "sweetalert2";
 import { FaPencilAlt } from "react-icons/fa";
+import { DatePicker } from "antd";
 import style from "../../styles/moduleCss/blogModal.module.css";
 
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
@@ -42,6 +43,7 @@ const initialState = {
   category: "",
   desc: "",
   image: "",
+  altText: "",
   limit: "",
   metaDesc: "",
   permalink: "",
@@ -92,6 +94,10 @@ const BlogDetails = ({ blog, setReload, reload, blogLoading }) => {
 
     // Oversized images are compressed to 50KB when uploaded.
     setState({ ...state, limit: "" });
+    // Keep the chosen file itself. It used to be captured by an onBlur handler
+    // on the input, which does not reliably fire before Update is clicked, so a
+    // replaced image was often never uploaded.
+    setImage(file);
 
     const reader = new FileReader();
     reader.onload = () => {
@@ -151,14 +157,17 @@ const BlogDetails = ({ blog, setReload, reload, blogLoading }) => {
           },
         );
 
+        if (!uploadRes.ok) throw new Error("upload failed");
         const result = await uploadRes.json();
         const uploaded = Array.isArray(result)
           ? { url: result[0] }
           : (result.files || [])[0] || { url: (result.urls || [])[0] };
         data.image = uploaded?.url ?? "";
       } else {
+        // Empty means "keep the current image" on the server.
         data.image = "";
       }
+      delete data.country;
 
       // Send update request
       const res = await axios.patch(
@@ -182,12 +191,44 @@ const BlogDetails = ({ blog, setReload, reload, blogLoading }) => {
         });
         setReload(!reload);
         setUpdate(false);
-        setState(initialState);
+        setState((prev) => ({ ...initialState, country: prev.country }));
+        setImage(undefined);
         document.getElementById("my-modal-15").checked = false;
       }
+    } catch (error) {
+      console.error(error);
+      Swal.fire("Failed", "The blog could not be updated.", "error");
     } finally {
       setImagLoading(false);
     }
+  };
+
+  // ================== Repost ==================
+  const repostBlog = (id) => {
+    Swal.fire({
+      title: "Repost this blog?",
+      text: "It will move to the top of the blog list.",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Yes, repost",
+    }).then((result) => {
+      if (!result.isConfirmed) return;
+      axios
+        .post(
+          `https://paraglive-backend.vercel.app/api/blogs/repost/${id}`,
+          {},
+          { headers: { authorization: `Bearer ${token}` } },
+        )
+        .then((response) => {
+          if (response.data.status === "success") {
+            Swal.fire("Reposted!", "The blog is back on top.", "success");
+            setReload(!reload);
+          }
+        })
+        .catch(() =>
+          Swal.fire("Failed", "Could not repost the blog.", "error"),
+        );
+    });
   };
 
   // ================== Render ==================
@@ -214,8 +255,7 @@ const BlogDetails = ({ blog, setReload, reload, blogLoading }) => {
                           className={style.upload}
                           type='file'
                           onChange={(e) => handleImgChange(e, i)}
-                          onBlur={(e) => setImage(e.target.files[0])}
-                        />
+                                        />
                         <img alt='' src={res.img} className={style.image} />
                       </div>
                       {state.limit && (
@@ -281,6 +321,45 @@ const BlogDetails = ({ blog, setReload, reload, blogLoading }) => {
                 </label>
 
                 <label className='text-black font-bold'>
+                  Image Alt Text:
+                  <input
+                    type='text'
+                    defaultValue={blog?.altText}
+                    maxLength={150}
+                    placeholder='Describe the cover image (for accessibility and SEO)'
+                    className='input input-bordered w-full bg-white border'
+                    onChange={(e) =>
+                      dispatch({ type: "altText", payload: e.target.value })
+                    }
+                  />
+                </label>
+
+                <div className='text-black font-bold'>
+                  <p>Schedule Post:</p>
+                  <DatePicker
+                    showTime={{ format: "HH:mm" }}
+                    format='YYYY-MM-DD HH:mm'
+                    placeholder='Pick a date and time (leave empty to keep as is)'
+                    disabledDate={(current) =>
+                      current && current.endOf("day").valueOf() < Date.now()
+                    }
+                    onChange={(value) =>
+                      setState((prev) => ({
+                        ...prev,
+                        publishAt: value ? value.toISOString() : "",
+                      }))
+                    }
+                  />
+                  {blog?.publishAt &&
+                    new Date(blog.publishAt).getTime() > Date.now() && (
+                      <p className='text-xs font-normal'>
+                        Currently scheduled for{" "}
+                        {new Date(blog.publishAt).toLocaleString()}.
+                      </p>
+                    )}
+                </div>
+
+                <label className='text-black font-bold'>
                   Category:
                   <select
                     className='p-3 bg-white border w-full rounded'
@@ -336,7 +415,7 @@ const BlogDetails = ({ blog, setReload, reload, blogLoading }) => {
 
                 <label
                   htmlFor='my-modal-15'
-                  className='bg-blue-400 px-3 py-1 ml-5 text-white cursor-pointer font-bold rounded'
+                  className='bg-blue-700 px-3 py-1 ml-5 text-white cursor-pointer font-bold rounded'
                   onClick={() => setUpdate(false)}
                 >
                   Cancel
@@ -346,11 +425,13 @@ const BlogDetails = ({ blog, setReload, reload, blogLoading }) => {
           ) : (
             // ================== View Mode ==================
             <div>
-              <img
-                className={style.image}
-                src={blog?.image}
-                alt={blog?.title}
-              />
+              {blog?.image && blog.image !== "avater" && (
+                <img
+                  className={style.image}
+                  src={blog.image}
+                  alt={blog?.altText || blog?.title}
+                />
+              )}
               <h1 className='text-black font-bold text-lg sm:text-2xl mt-3'>
                 Title: {blog?.title}
                 <span className='text-sm font-normal'>
@@ -370,6 +451,18 @@ const BlogDetails = ({ blog, setReload, reload, blogLoading }) => {
                 <p>
                   <b>Meta Keyword:</b> {blog?.metaKey}
                 </p>
+                {blog?.altText && (
+                  <p>
+                    <b>Alt Text:</b> {blog.altText}
+                  </p>
+                )}
+                {blog?.publishAt &&
+                  new Date(blog.publishAt).getTime() > Date.now() && (
+                    <p className='text-amber-600'>
+                      <b>Scheduled for:</b>{" "}
+                      {new Date(blog.publishAt).toLocaleString()}
+                    </p>
+                  )}
                 <p>
                   <b>Category:</b>{" "}
                   <span className={style.category}>{blog?.category}</span>
@@ -383,7 +476,7 @@ const BlogDetails = ({ blog, setReload, reload, blogLoading }) => {
               <div className='flex mt-5'>
                 <label
                   htmlFor='my-modal-15'
-                  className='bg-blue-400 px-3 py-1 mr-5 text-white cursor-pointer font-bold rounded'
+                  className='bg-blue-700 px-3 py-1 mr-5 text-white cursor-pointer font-bold rounded'
                 >
                   Cancel
                 </label>
@@ -404,6 +497,15 @@ const BlogDetails = ({ blog, setReload, reload, blogLoading }) => {
                     onClick={() => setUpdate(true)}
                   >
                     Update
+                  </label>
+                </button>
+
+                <button onClick={() => repostBlog(blog?._id)}>
+                  <label
+                    htmlFor='my-modal-15'
+                    className='bg-blue-700 px-3 py-2 text-white cursor-pointer ml-3 font-bold rounded'
+                  >
+                    Repost
                   </label>
                 </button>
               </div>

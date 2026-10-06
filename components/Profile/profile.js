@@ -28,7 +28,7 @@ const initialState = {
   passError: "",
 };
 
-const Profile = ({ user }) => {
+const Profile = ({ user, onAvatarChange }) => {
   const [state, setState] = useState(initialState);
   const [imagLoading, setIsLoadingimgS] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -61,18 +61,35 @@ const Profile = ({ user }) => {
   // oldPassword
 
   const imgUpload = async (e) => {
+    if (!image) {
+      Swal.fire({ icon: "warning", title: "Choose a picture first" });
+      return;
+    }
     setIsLoadingimgS(true);
-    const formData = new FormData();
-    formData.append("images", (await compressImage(image)).file);
-    await fetch("https://paraglive-backend.vercel.app/api/image/upload-file", {
-      method: "POST",
-      body: formData,
-    })
-      .then((res) => res.json())
-      .then((result) => {
-        setState({ ...state, avater: result.payload.url, selected: "no" });
-        setIsLoadingimgS(false);
+    try {
+      const formData = new FormData();
+      formData.append("images", (await compressImage(image)).file);
+      const res = await fetch(
+        "https://paraglive-backend.vercel.app/api/image/upload-file",
+        { method: "POST", body: formData },
+      );
+      const result = await res.json();
+      if (!res.ok || !result?.payload?.url) throw new Error("upload failed");
+      setState((prev) => ({
+        ...prev,
+        avater: result.payload.url,
+        selected: "no",
+      }));
+    } catch (error) {
+      console.error(error);
+      Swal.fire({
+        icon: "error",
+        title: "The picture could not be uploaded",
+        text: "Please try again.",
       });
+    } finally {
+      setIsLoadingimgS(false);
+    }
   };
 
   // image handler
@@ -86,6 +103,9 @@ const Profile = ({ user }) => {
 
     // Oversized images are compressed to 50KB when uploaded.
     setState({ ...state, selected: "yes" });
+    // Keep the chosen file here: it used to be captured by an onBlur handler
+    // that does not reliably fire, so the upload ran with no file at all.
+    setImage(image);
 
     reader.onload = () => {
       dummyimgs[i].img = reader.result;
@@ -112,23 +132,41 @@ const Profile = ({ user }) => {
       },
     };
 
-    await axios
-      .patch(
+    try {
+      const res = await axios.patch(
         `https://paraglive-backend.vercel.app/api/users/${state.userData._id}`,
         data,
         options,
-      )
-      .then((res) => {
-        if (res.data.status == "success") {
-          Swal.fire({
-            position: "top-center",
-            icon: "success",
-            title: "Your work has been saved",
-            showConfirmButton: false,
-            timer: 1500,
-          }).then(setState({ ...state, edit: false }));
-        }
-      });
+      );
+      if (res.data.status == "success") {
+        await Swal.fire({
+          position: "top-center",
+          icon: "success",
+          title: "Your work has been saved",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+        // Show what was just saved, rather than the values from page load.
+        setDummyimgs([{ img: "/user.png" }]);
+        setImage(undefined);
+        if (avater && onAvatarChange) onAvatarChange(avater);
+        setState((prev) => ({
+          ...prev,
+          edit: false,
+          selected: "",
+          firstName: "",
+          lastName: "",
+          phone: "",
+          avater: "",
+          userData: res.data.data?.user
+            ? { ...prev.userData, ...res.data.data.user }
+            : prev.userData,
+        }));
+      }
+    } catch (error) {
+      console.error(error);
+      Swal.fire({ icon: "error", title: "Could not save your profile" });
+    }
   };
 
   const updatePassword = async () => {
@@ -234,7 +272,6 @@ const Profile = ({ user }) => {
                                 className={style.upload}
                                 type='file'
                                 onChange={(e) => _handleImgChange(e, i)}
-                                onBlur={(e) => setImage(e.target.files[0])}
                               />
                               <img
                                 alt=''

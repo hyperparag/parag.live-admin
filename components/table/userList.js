@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Input, Pagination, Table } from "antd";
+import { Input, Modal, Pagination, Table } from "antd";
 import style from "../../styles/moduleCss/dashboard.module.css";
 import Cookies from "js-cookie";
 import jwt_decode from "jwt-decode";
@@ -92,6 +92,38 @@ const UserList = ({ setnewUser, datas }) => {
   const [startIndex, setIndex] = useState(1);
 
   const usersStringfy = Cookies.get("token");
+
+  // Bonus payouts to the selected users.
+  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+  const [bonusOpen, setBonusOpen] = useState(false);
+  const [bonus, setBonus] = useState({ amount: "", type: "earn", note: "" });
+  const [bonusSending, setBonusSending] = useState(false);
+
+  const sendBonus = async () => {
+    setBonusSending(true);
+    try {
+      const res = await axios.post(
+        "https://paraglive-backend.vercel.app/api/users/bonus",
+        { userIds: selectedRowKeys, ...bonus },
+        { headers: { authorization: `Bearer ${usersStringfy}` } },
+      );
+      Swal.fire("Sent!", res.data.message, "success");
+      setBonusOpen(false);
+      setBonus({ amount: "", type: "earn", note: "" });
+      setSelectedRowKeys([]);
+      setReload(!reload);
+    } catch (error) {
+      Swal.fire(
+        "Could not send",
+        error?.response?.data?.message || "Please try again.",
+        "error",
+      );
+    } finally {
+      setBonusSending(false);
+    }
+  };
+
+  const rowSelection = { selectedRowKeys, onChange: setSelectedRowKeys };
 
   useEffect(() => {
     setLoading(true);
@@ -355,10 +387,65 @@ const UserList = ({ setnewUser, datas }) => {
   return (
     <div className='w-full'>
       <Search placeholder='name or email' onSearch={onSearch} enterButton />
-      <br></br>
-      <br></br>
+      <div className='my-3 flex flex-wrap items-center gap-3'>
+        <button
+          disabled={selectedRowKeys.length === 0}
+          onClick={() => setBonusOpen(true)}
+          className='bg-green-600 text-white px-4 py-1 rounded font-semibold disabled:opacity-40 disabled:cursor-not-allowed'
+        >
+          Send bonus to selected
+        </button>
+        <span className='text-black text-sm'>
+          {selectedRowKeys.length > 0
+            ? `${selectedRowKeys.length} user(s) selected`
+            : "Tick users in the list to send them a bonus."}
+        </span>
+      </div>
+      <Modal
+        title='Send bonus'
+        open={bonusOpen}
+        onCancel={() => setBonusOpen(false)}
+        onOk={sendBonus}
+        okText='Send'
+        confirmLoading={bonusSending}
+        okButtonProps={{ disabled: !bonus.amount }}
+      >
+        <p className='text-black mb-2'>
+          Sending to <b>{selectedRowKeys.length}</b> selected user(s).
+        </p>
+        <label className='text-black block mb-1'>Bonus type</label>
+        <select
+          className='w-full border rounded p-2 mb-3 bg-white text-black'
+          value={bonus.type}
+          onChange={(e) => setBonus({ ...bonus, type: e.target.value })}
+        >
+          <option value='earn'>
+            Earnings (user can convert it to posting credit)
+          </option>
+          <option value='credit'>Posting credit (usable right away)</option>
+        </select>
+        <label className='text-black block mb-1'>Amount per user ($)</label>
+        <input
+          type='number'
+          min='0.01'
+          step='0.01'
+          className='w-full border rounded p-2 mb-3 bg-white text-black'
+          value={bonus.amount}
+          onChange={(e) => setBonus({ ...bonus, amount: e.target.value })}
+        />
+        <label className='text-black block mb-1'>Note (shown to the user)</label>
+        <input
+          type='text'
+          maxLength={200}
+          className='w-full border rounded p-2 bg-white text-black'
+          placeholder='e.g. Thanks for being a top poster'
+          value={bonus.note}
+          onChange={(e) => setBonus({ ...bonus, note: e.target.value })}
+        />
+      </Modal>
       <>
         <Table
+          rowSelection={rowSelection}
           className={style.tableLG}
           columns={columns}
           dataSource={data}
@@ -369,6 +456,7 @@ const UserList = ({ setnewUser, datas }) => {
           pagination={false}
         />
         <Table
+          rowSelection={rowSelection}
           {...tableProps}
           columns={tableColumns}
           dataSource={hasData ? data : []}

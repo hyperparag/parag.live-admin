@@ -48,6 +48,7 @@ import VerificationDetails from "../../components/Modal/verificationDetails";
 import RainbowAds from "../../components/rainbow-ads";
 import ResponsiveAds from "../../components/responsive-ads";
 import Deposit from "../../components/deposit/Deposit";
+import AdsGuide from "../../components/ads/adsGuide";
 
 const { Header, Sider, Content } = Layout;
 
@@ -64,6 +65,7 @@ const initialState = {
 const SuperAdmin = () => {
   const [current, setCurrent] = useState("1");
   const [collapsed, setCollapsed] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const router = useRouter();
   const [admin, setAdmin] = useState();
 
@@ -84,6 +86,7 @@ const SuperAdmin = () => {
 
   const onClick = (e) => {
     setstate({ ...state, tab: e });
+    if (isMobile) setCollapsed(true);
   };
 
   const usersStringfy = Cookies.get("token");
@@ -136,7 +139,7 @@ const SuperAdmin = () => {
   if (state.tab == "") {
     content = (
       <div>
-        <h1 className='text-2xl font-bold m-5 text-black'>Dashboard</h1>
+        <h1 className='text-xl sm:text-2xl font-bold m-2 sm:m-5 text-black'>Dashboard</h1>
         <div className='m-1 '>
           <DataCards data={allDatas} />
         </div>
@@ -146,8 +149,8 @@ const SuperAdmin = () => {
   if (state.tab == "runningPosts") {
     content = (
       <div>
-        <h1 className='text-2xl font-bold m-5 text-black'>Running Posts</h1>
-        <div className='m-5'>
+        <h1 className='text-xl sm:text-2xl font-bold m-2 sm:m-5 text-black'>Running Posts</h1>
+        <div className='m-1 sm:m-5'>
           <ApprovedPosts setNewPost={setNewPost} datas={allDatas} />
         </div>
       </div>
@@ -156,8 +159,8 @@ const SuperAdmin = () => {
   if (state.tab == "pendingPosts") {
     content = (
       <div>
-        <h1 className='text-2xl font-bold m-5 text-black'> Pending Posts</h1>
-        <div className='m-5'>
+        <h1 className='text-xl sm:text-2xl font-bold m-2 sm:m-5 text-black'> Pending Posts</h1>
+        <div className='m-1 sm:m-5'>
           <PendingPosts setNewPost={setNewPost} />
         </div>
       </div>
@@ -166,11 +169,11 @@ const SuperAdmin = () => {
   if (state.tab == "userlist") {
     content = (
       <div>
-        <h1 className='text-2xl font-bold m-5 text-black'>
+        <h1 className='text-xl sm:text-2xl font-bold m-2 sm:m-5 text-black'>
           {" "}
           User List ({allDatas?.allUsers})
         </h1>
-        <div className='m-5'>
+        <div className='m-1 sm:m-5'>
           <UserList setnewUser={setnewUser} datas={allDatas} />
         </div>
       </div>
@@ -179,8 +182,8 @@ const SuperAdmin = () => {
   if (state.tab == "links") {
     content = (
       <div>
-        <h1 className='text-2xl font-bold m-5 text-black'> Important Links</h1>
-        <div className='m-5'>
+        <h1 className='text-xl sm:text-2xl font-bold m-2 sm:m-5 text-black'> Important Links</h1>
+        <div className='m-1 sm:m-5'>
           <Links users={state.userList} />
         </div>
       </div>
@@ -189,7 +192,12 @@ const SuperAdmin = () => {
   if (state.tab == "profile") {
     content = (
       <div>
-        <Profile user={user} />
+        <Profile
+          user={user}
+          onAvatarChange={(avater) =>
+            setAdmin((prev) => ({ ...prev, avater }))
+          }
+        />
       </div>
     );
   }
@@ -197,7 +205,7 @@ const SuperAdmin = () => {
     content = (
       <div>
         {" "}
-        <h1 className='text-2xl font-bold m-5 text-black'> Deposits</h1>
+        <h1 className='text-xl sm:text-2xl font-bold m-2 sm:m-5 text-black'> Deposits</h1>
         <div className='m-1'>
           <Deposit setnewUser={setnewUser} />
         </div>
@@ -207,7 +215,7 @@ const SuperAdmin = () => {
   if (state.tab == "addBlog") {
     content = (
       <div>
-        <h1 className='text-2xl font-bold m-5 text-black'> Add Blog</h1>
+        <h1 className='text-xl sm:text-2xl font-bold m-2 sm:m-5 text-black'> Add Blog</h1>
         <div className='m-1'>
           <AddBlog />
         </div>
@@ -217,11 +225,11 @@ const SuperAdmin = () => {
   if (state.tab == "blogList") {
     content = (
       <div>
-        <h1 className='text-2xl font-bold m-5 text-black'>
+        <h1 className='text-xl sm:text-2xl font-bold m-2 sm:m-5 text-black'>
           {" "}
           Blog List ({allDatas?.allBlogs})
         </h1>
-        <div className='m-5'>
+        <div className='m-1 sm:m-5'>
           <BlogsList
             setBlogId={setBlogId}
             reload={reload}
@@ -231,11 +239,21 @@ const SuperAdmin = () => {
       </div>
     );
   }
+  if (state.tab == "adsGuide") {
+    content = (
+      <div>
+        <h1 className='text-xl sm:text-2xl font-bold m-2 sm:m-5 text-black'>Ads Overview</h1>
+        <div className='m-1 sm:m-5'>
+          <AdsGuide onOpen={(tab) => setstate({ ...state, tab })} />
+        </div>
+      </div>
+    );
+  }
   if (state.tab == "sideLinks") {
     content = (
       <div>
-        <h1 className='text-2xl font-bold m-5 text-black'> Side Links List</h1>
-        <div className='m-5'>
+        <h1 className='text-xl sm:text-2xl font-bold m-2 sm:m-5 text-black'> Side Links List</h1>
+        <div className='m-1 sm:m-5'>
           <SideLinks />
         </div>
       </div>
@@ -244,8 +262,8 @@ const SuperAdmin = () => {
   if (state.tab == "rainbow") {
     content = (
       <div>
-        <h1 className='text-2xl font-bold m-5 text-black'> Rainbow Ads</h1>
-        <div className='m-5'>
+        <h1 className='text-xl sm:text-2xl font-bold m-2 sm:m-5 text-black'> Rainbow Ads</h1>
+        <div className='m-1 sm:m-5'>
           <RainbowAds />
         </div>
       </div>
@@ -254,8 +272,8 @@ const SuperAdmin = () => {
   if (state.tab == "responsive") {
     content = (
       <div>
-        <h1 className='text-2xl font-bold m-5 text-black'> Responsive Ads </h1>
-        <div className='m-5'>
+        <h1 className='text-xl sm:text-2xl font-bold m-2 sm:m-5 text-black'> Responsive Ads </h1>
+        <div className='m-1 sm:m-5'>
           <ResponsiveAds />
         </div>
       </div>
@@ -264,8 +282,8 @@ const SuperAdmin = () => {
   if (state.tab == "reports") {
     content = (
       <div>
-        <h1 className='text-2xl font-bold m-5 text-black'> Reports List</h1>
-        <div className='m-5'>
+        <h1 className='text-xl sm:text-2xl font-bold m-2 sm:m-5 text-black'> Reports List</h1>
+        <div className='m-1 sm:m-5'>
           <ReportList setstate={setstate} state={state} reload={reload} />
         </div>
       </div>
@@ -275,10 +293,10 @@ const SuperAdmin = () => {
   if (state.tab == "verification") {
     content = (
       <div>
-        <h1 className='text-2xl font-bold m-5 text-black'>
+        <h1 className='text-xl sm:text-2xl font-bold m-2 sm:m-5 text-black'>
           Verification Requests
         </h1>
-        <div className='m-5'>
+        <div className='m-1 sm:m-5'>
           <VerificationList setstate={setstate} state={state} reload={reload} />
         </div>
       </div>
@@ -288,7 +306,7 @@ const SuperAdmin = () => {
   if (state.tab == "transaction") {
     content = (
       <div>
-        <h1 className='text-2xl font-bold sm:m-5 text-black'>
+        <h1 className='text-xl sm:text-2xl font-bold m-2 sm:m-5 text-black'>
           {" "}
           Transaction History
         </h1>
@@ -325,6 +343,7 @@ const SuperAdmin = () => {
     getItem("Users", <UsergroupAddOutlined className='icons' />, "userlist"),
 
     getItem("Ads", <LinkOutlined className='icons' />, "sub4", [
+      getItem("Ads Overview", <LinkOutlined className='icons' />, "adsGuide"),
       getItem("Header Ads", <LinkOutlined className='icons' />, "links"),
       getItem(
         "Side Ads",
@@ -378,7 +397,31 @@ const SuperAdmin = () => {
       </Head>
 
       <Layout>
-        <Sider trigger={null} collapsible collapsed={collapsed}>
+        <Sider
+          trigger={null}
+          collapsible
+          collapsed={collapsed}
+          breakpoint='md'
+          collapsedWidth={isMobile ? 0 : 80}
+          onBreakpoint={(broken) => {
+            setIsMobile(broken);
+            setCollapsed(broken);
+          }}
+          className={isMobile ? "admin-sider-mobile" : ""}
+          style={
+            isMobile
+              ? {
+                  position: "fixed",
+                  top: 0,
+                  bottom: 0,
+                  left: 0,
+                  zIndex: 1001,
+                  overflowY: "auto",
+                  height: "100vh",
+                }
+              : undefined
+          }
+        >
           <div className='logo'>
             {collapsed ? (
               <h1 className='text-2xl'>PRG</h1>
@@ -394,7 +437,13 @@ const SuperAdmin = () => {
             items={items}
           />
         </Sider>
-        <Layout className='site-layout'>
+        {isMobile && !collapsed && (
+          <div
+            className='admin-sider-backdrop'
+            onClick={() => setCollapsed(true)}
+          />
+        )}
+        <Layout className='site-layout' style={{ minWidth: 0 }}>
           <Header
             style={{
               padding: 0,
@@ -410,7 +459,7 @@ const SuperAdmin = () => {
                 },
               )}
 
-              <div className='dropdown dropdown-end mt-2 mr-5'>
+              <div className='dropdown dropdown-end mt-2 mr-3 sm:mr-5'>
                 <div className='avatar online'>
                   <div className='w-10 rounded-full cursor-pointer'>
                     {admin?.avater == "avater" ? (
@@ -447,8 +496,9 @@ const SuperAdmin = () => {
 
           <Content
             style={{
-              margin: "24px 16px",
-              padding: 24,
+              margin: isMobile ? "8px" : "24px 16px",
+              padding: isMobile ? 12 : 24,
+              overflowX: "auto",
               minHeight: 280,
 
               background: colorBgContainer,
