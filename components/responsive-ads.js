@@ -9,7 +9,7 @@ const ResponsiveAds = () => {
 
   const getAds = async () => {
     await axios
-      .get(`https://paraglive-backend.vercel.app/api/responsive-ads`)
+      .get(`  https://paraglive-backend.vercel.app/api/responsive-ads`)
       .then((res) => {
         setLoading(false);
         setAds(res?.data?.response?.links);

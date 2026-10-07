@@ -14,7 +14,7 @@ const VerificationDetails = ({ request, reload, setReload }) => {
   const review = (status, note) => {
     axios
       .patch(
-        `https://paraglive-backend.vercel.app/api/verification/${request?._id}`,
+        `  https://paraglive-backend.vercel.app/api/verification/${request?._id}`,
         { status, note },
         {
           headers: {
@@ -49,7 +49,7 @@ const VerificationDetails = ({ request, reload, setReload }) => {
 
       axios
         .delete(
-          `https://paraglive-backend.vercel.app/api/verification/${request?._id}`,
+          `  https://paraglive-backend.vercel.app/api/verification/${request?._id}`,
           {
             headers: {
               authorization: `Bearer ${usersStringfy}`,

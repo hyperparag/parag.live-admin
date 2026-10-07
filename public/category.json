@@ -24,14 +24,6 @@
     "children": []
   },
   {
-    "_id": "63d7bb514aa59811ad16210a",
-    "name": "Transgender",
-    "parentId": "63d7b9474aa59811ad1620de",
-    "createdBy": "Jhon Doe",
-    "createdAt": "2023-01-30T12:42:58.000Z",
-    "children": []
-  },
-  {
     "_id": "63d7bb584aa59811ad16210c",
     "name": "Women-Women",
     "parentId": "63d7b9474aa59811ad1620de",

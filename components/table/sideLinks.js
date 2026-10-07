@@ -94,7 +94,7 @@ const SideLinks = () => {
   async function getAds() {
     try {
       const response = await axios.get(
-        `https://paraglive-backend.vercel.app/api/sideads`,
+        `  https://paraglive-backend.vercel.app/api/sideads`,
         {
           method: "GET",
           headers: {
@@ -126,7 +126,7 @@ const SideLinks = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         axios
-          .delete(`https://paraglive-backend.vercel.app/api/sideads/${id}`, {
+          .delete(`  https://paraglive-backend.vercel.app/api/sideads/${id}`, {
             headers: { authorization: `Bearer ${usersStringfy}` },
           })
           .then((response) => {
@@ -156,7 +156,7 @@ const SideLinks = () => {
       if (result.isConfirmed) {
         axios
           .post(
-            `https://paraglive-backend.vercel.app/api/sideads/deleteMany`,
+            `  https://paraglive-backend.vercel.app/api/sideads/deleteMany`,
             ids,
             { headers: { authorization: `Bearer ${usersStringfy}` } },
           )
@@ -379,7 +379,7 @@ const SideLinks = () => {
       // side ad images were never actually stored. This is the live ImageKit
       // route, and it also gives us the fileId for cleanup on delete.
       const uploadRes = await fetch(
-        "https://paraglive-backend.vercel.app/api/files2/files",
+        "  https://paraglive-backend.vercel.app/api/files2/files",
         { method: "POST", body: formData },
       );
       if (!uploadRes.ok) throw new Error("image upload failed");
@@ -400,7 +400,7 @@ const SideLinks = () => {
       };
 
       const saveRes = await fetch(
-        "https://paraglive-backend.vercel.app/api/sideads",
+        "  https://paraglive-backend.vercel.app/api/sideads",
         {
           method: "POST",
           headers: {
@@ -481,7 +481,7 @@ const SideLinks = () => {
       // which returns no URL, so replacing a banner silently did nothing.
       try {
         const uploadRes = await fetch(
-          "https://paraglive-backend.vercel.app/api/files2/files",
+          "  https://paraglive-backend.vercel.app/api/files2/files",
           { method: "POST", body: formData },
         );
         if (!uploadRes.ok) throw new Error("image upload failed");
@@ -508,7 +508,7 @@ const SideLinks = () => {
     }
 
     fetch(
-      `https://paraglive-backend.vercel.app/api/sideads/${selectedData._id}`,
+      `  https://paraglive-backend.vercel.app/api/sideads/${selectedData._id}`,
       {
         method: "PATCH",
         headers: {

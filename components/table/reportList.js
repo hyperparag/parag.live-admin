@@ -47,7 +47,7 @@ const ReportList = ({ setstate, reload, state }) => {
   async function getUser() {
     try {
       const response = await axios.get(
-        `https://paraglive-backend.vercel.app/api/reports?page=${current}`,
+        `  https://paraglive-backend.vercel.app/api/reports?page=${current}`,
         {
           method: "GET",
           headers: {
@@ -82,7 +82,7 @@ const ReportList = ({ setstate, reload, state }) => {
     }).then((result) => {
       if (result.isConfirmed) {
         axios
-          .delete(`https://paraglive-backend.vercel.app/api/reports/${id}`, {
+          .delete(`  https://paraglive-backend.vercel.app/api/reports/${id}`, {
             headers: {
               authorization: `Bearer ${usersStringfy}`,
             },
@@ -112,7 +112,7 @@ const ReportList = ({ setstate, reload, state }) => {
   const toggleRead = (id, isRead) => {
     axios
       .patch(
-        `https://paraglive-backend.vercel.app/api/reports/${id}`,
+        `  https://paraglive-backend.vercel.app/api/reports/${id}`,
         { isRead: !isRead },
         { headers: { authorization: `Bearer ${usersStringfy}` } },
       )

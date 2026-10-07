@@ -36,7 +36,7 @@ const UpdateResponsiveAds = ({ setReload, reload, ads }) => {
       // The upload API answers { urls, files }; reading result[0] gave
       // undefined, so a new banner image was silently never saved.
       const result = await fetch(
-        "https://paraglive-backend.vercel.app/api/files2/files",
+        "  https://paraglive-backend.vercel.app/api/files2/files",
         { method: "POST", body: formData },
       ).then((res) => res.json());
       data.image = Array.isArray(result) ? result[0] : (result.urls || [])[0];
@@ -51,7 +51,7 @@ const UpdateResponsiveAds = ({ setReload, reload, ads }) => {
 
     try {
       await axios.patch(
-        `https://paraglive-backend.vercel.app/api/responsive-ads/6a4dff1365f818834bf4b27b`,
+        `  https://paraglive-backend.vercel.app/api/responsive-ads/6a4dff1365f818834bf4b27b`,
         newData,
       );
       setOpened(false);

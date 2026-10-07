@@ -9,7 +9,7 @@ const RainbowAds = () => {
 
   const getAds = async () => {
     await axios
-      .get(`https://paraglive-backend.vercel.app/api/rainbow-ads`)
+      .get(`  https://paraglive-backend.vercel.app/api/rainbow-ads`)
       .then((res) => {
         setLoading(false);
         setAds(res?.data?.response?.links);

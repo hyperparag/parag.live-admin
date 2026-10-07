@@ -103,7 +103,7 @@ const UserList = ({ setnewUser, datas }) => {
     setBonusSending(true);
     try {
       const res = await axios.post(
-        "https://paraglive-backend.vercel.app/api/users/bonus",
+        "  https://paraglive-backend.vercel.app/api/users/bonus",
         { userIds: selectedRowKeys, ...bonus },
         { headers: { authorization: `Bearer ${usersStringfy}` } },
       );
@@ -133,7 +133,7 @@ const UserList = ({ setnewUser, datas }) => {
   async function getUser() {
     try {
       const response = await axios.get(
-        `https://paraglive-backend.vercel.app/api/users?page=${page}&q=${keyword}&size=${pageSize}`,
+        `  https://paraglive-backend.vercel.app/api/users?page=${page}&q=${keyword}&size=${pageSize}`,
         {
           method: "GET",
           headers: {
@@ -166,7 +166,7 @@ const UserList = ({ setnewUser, datas }) => {
       if (result.isConfirmed) {
         axios
 
-          .delete(`https://paraglive-backend.vercel.app/api/users/${id}`, {
+          .delete(`  https://paraglive-backend.vercel.app/api/users/${id}`, {
             headers: {
               authorization: `Bearer ${usersStringfy}`,
             },
@@ -335,7 +335,9 @@ const UserList = ({ setnewUser, datas }) => {
       lastName: `${a?.lastName?.slice(0, 15)}`,
       fullname: `${a?.firstName + a?.lastName}`,
       city: `${a?.city + "" + a?.cities}`,
-      credit: `${a?.credit.toFixed(2)}`,
+      // An unlimited (Infinity) balance arrives from the API as null.
+      credit:
+        typeof a?.credit === "number" ? a.credit.toFixed(2) : "Unlimited",
 
       email: `${a?.email}`,
       contact: `${a?.phone}`,

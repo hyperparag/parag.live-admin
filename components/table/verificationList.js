@@ -17,7 +17,7 @@ const VerificationList = ({ setstate, reload, state }) => {
   async function getRequests() {
     try {
       const response = await axios.get(
-        `https://paraglive-backend.vercel.app/api/verification?page=${current}`,
+        `  https://paraglive-backend.vercel.app/api/verification?page=${current}`,
         {
           method: "GET",
           headers: {
@@ -59,7 +59,7 @@ const VerificationList = ({ setstate, reload, state }) => {
 
       axios
         .delete(
-          `https://paraglive-backend.vercel.app/api/verification/${id}`,
+          `  https://paraglive-backend.vercel.app/api/verification/${id}`,
           { headers: { authorization: `Bearer ${usersStringfy}` } },
         )
         .then((response) => {
@@ -103,7 +103,7 @@ const VerificationList = ({ setstate, reload, state }) => {
 
       axios
         .post(
-          "https://paraglive-backend.vercel.app/api/verification/deleteMany",
+          "  https://paraglive-backend.vercel.app/api/verification/deleteMany",
           selectedRowKeys,
           { headers: { authorization: `Bearer ${usersStringfy}` } },
         )
