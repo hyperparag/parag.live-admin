@@ -5,7 +5,7 @@ import Cookies from "js-cookie";
 import Swal from "sweetalert2";
 import AddCredit from "../Modal/addCredit";
 
-const API = "https://paraglive-backend.vercel.app/api/deposit";
+const API = "  https://paraglive-backend.vercel.app/api/deposit";
 
 const DepositTable = ({ totalOrder, reload, setReload, startIndex }) => {
   const [newUser, setNewUser] = useState({});

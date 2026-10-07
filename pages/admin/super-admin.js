@@ -105,7 +105,7 @@ const SuperAdmin = () => {
   async function allData() {
     try {
       const response = await axios.get(
-        `https://paraglive-backend.vercel.app/api/allData`,
+        `  https://paraglive-backend.vercel.app/api/allData`,
         {
           method: "GET",
           headers: {

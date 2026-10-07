@@ -120,7 +120,7 @@ const ApprovedPosts = ({ setNewPost, datas }) => {
 
   async function getPosts() {
     fetch(
-      `https://paraglive-backend.vercel.app/api/products/admin?page=${current}&size=${pageSize}`,
+      `  https://paraglive-backend.vercel.app/api/products/admin?page=${current}&size=${pageSize}`,
       {
         method: "GET",
         headers: {
@@ -156,7 +156,7 @@ const ApprovedPosts = ({ setNewPost, datas }) => {
     }).then((result) => {
       if (result.isConfirmed) {
         axios
-          .delete(`https://paraglive-backend.vercel.app/api/products/${id}`, {
+          .delete(`  https://paraglive-backend.vercel.app/api/products/${id}`, {
             headers: {
               authorization: `Bearer ${usersStringfy}`,
             },
@@ -191,7 +191,7 @@ const ApprovedPosts = ({ setNewPost, datas }) => {
       if (result.isConfirmed) {
         axios
           .post(
-            `https://paraglive-backend.vercel.app/api/products/deleteMany`,
+            `  https://paraglive-backend.vercel.app/api/products/deleteMany`,
             ids,
             { headers: { authorization: `Bearer ${usersStringfy}` } },
           )
@@ -221,7 +221,7 @@ const ApprovedPosts = ({ setNewPost, datas }) => {
     }).then((result) => {
       if (result.isConfirmed) {
         axios
-          .post(`https://paraglive-backend.vercel.app/api/products/many`, ids, {
+          .post(`  https://paraglive-backend.vercel.app/api/products/many`, ids, {
             headers: { authorization: `Bearer ${usersStringfy}` },
           })
           .then((response) => {

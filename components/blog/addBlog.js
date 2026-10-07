@@ -124,7 +124,7 @@ const AddBlog = () => {
           (await compressImage(fileList[0].originFileObj)).file,
         );
         const res = await fetch(
-          "https://paraglive-backend.vercel.app/api/files2/files",
+          "  https://paraglive-backend.vercel.app/api/files2/files",
           { method: "POST", body: formData },
         );
         if (!res.ok) throw new Error("upload failed");
@@ -163,7 +163,7 @@ const AddBlog = () => {
       .catch(() => {});
 
     await axios
-      .post("https://paraglive-backend.vercel.app/api/blogs", data, { headers })
+      .post("  https://paraglive-backend.vercel.app/api/blogs", data, { headers })
       .then((response) => {
       setIsLoadingimgS(false);
       if (response.data.status == "success") {
@@ -234,7 +234,7 @@ const AddBlog = () => {
     // URL, so the uploaded image link was always undefined.
     try {
       const res = await fetch(
-        "https://paraglive-backend.vercel.app/api/files2/files",
+        "  https://paraglive-backend.vercel.app/api/files2/files",
         { method: "POST", body: formData },
       );
       if (!res.ok) throw new Error("upload failed");

@@ -26,7 +26,7 @@ const Header = () => {
   async function getUser() {
     try {
       const response = await axios.get(
-        `https://paraglive-backend.vercel.app/api/links`,
+        `  https://paraglive-backend.vercel.app/api/links`,
         {
           method: "GET",
         },

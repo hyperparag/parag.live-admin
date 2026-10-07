@@ -121,7 +121,7 @@ html {
   -webkit-user-select: none;
   touch-action: manipulation;
 }
-/* https://paraglive-backend.vercel.app/api/ */
+/*   https://paraglive-backend.vercel.app/api/ */
 
 .icons {
   color: rgb(28, 187, 235) !important;

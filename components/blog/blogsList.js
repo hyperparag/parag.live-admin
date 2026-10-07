@@ -74,7 +74,7 @@ const BlogsList = ({ setBlogId, reload, setBlogLoading }) => {
   async function getUser() {
     try {
       const response = await axios.get(
-        `https://paraglive-backend.vercel.app/api/blogs/admin?page=${current}&q=${keyword}&cat=${category}`,
+        `  https://paraglive-backend.vercel.app/api/blogs/admin?page=${current}&q=${keyword}&cat=${category}`,
         {
           method: "GET",
           headers: {
@@ -113,7 +113,7 @@ const BlogsList = ({ setBlogId, reload, setBlogLoading }) => {
     }).then((result) => {
       if (result.isConfirmed) {
         axios
-          .delete(`https://paraglive-backend.vercel.app/api/blogs/${id}`, {
+          .delete(`  https://paraglive-backend.vercel.app/api/blogs/${id}`, {
             headers: {
               authorization: `Bearer ${usersStringfy}`,
             },
@@ -140,7 +140,7 @@ const BlogsList = ({ setBlogId, reload, setBlogLoading }) => {
       if (!result.isConfirmed) return;
       axios
         .post(
-          `https://paraglive-backend.vercel.app/api/blogs/repost/${id}`,
+          `  https://paraglive-backend.vercel.app/api/blogs/repost/${id}`,
           {},
           { headers: { authorization: `Bearer ${usersStringfy}` } },
         )
@@ -157,7 +157,7 @@ const BlogsList = ({ setBlogId, reload, setBlogLoading }) => {
   const findData = async (id) => {
     setBlogLoading(true);
     const response = await axios.get(
-      `https://paraglive-backend.vercel.app/api/blogs/${id}`,
+      `  https://paraglive-backend.vercel.app/api/blogs/${id}`,
       {
         method: "GET",
         headers: {
@@ -361,7 +361,7 @@ const BlogsList = ({ setBlogId, reload, setBlogLoading }) => {
       if (result.isConfirmed) {
         axios
           .post(
-            `https://paraglive-backend.vercel.app/api/blogs/deleteMany`,
+            `  https://paraglive-backend.vercel.app/api/blogs/deleteMany`,
             ids,
             { headers: { authorization: `Bearer ${usersStringfy}` } },
           )
@@ -391,7 +391,7 @@ const BlogsList = ({ setBlogId, reload, setBlogLoading }) => {
       if (result.isConfirmed) {
         axios
           .post(
-            `https://paraglive-backend.vercel.app/api/blogs/updatedMany`,
+            `  https://paraglive-backend.vercel.app/api/blogs/updatedMany`,
             { data },
             { headers: { authorization: `Bearer ${usersStringfy}` } },
           )
@@ -426,7 +426,7 @@ const BlogsList = ({ setBlogId, reload, setBlogLoading }) => {
       if (result.isConfirmed) {
         axios
           .post(
-            `https://paraglive-backend.vercel.app/api/blogs/updatedpublishMany`,
+            `  https://paraglive-backend.vercel.app/api/blogs/updatedpublishMany`,
             { data },
             { headers: { authorization: `Bearer ${usersStringfy}` } },
           )

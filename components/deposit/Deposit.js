@@ -18,7 +18,7 @@ const Deposit = ({ setnewUser }) => {
   async function totalDeposit() {
     try {
       const response = await axios.get(
-        `https://paraglive-backend.vercel.app/api/deposit?email=${email}&size=${pageSize}&page=${current}`,
+        `  https://paraglive-backend.vercel.app/api/deposit?email=${email}&size=${pageSize}&page=${current}`,
         { headers: { authorization: `Bearer ${Cookies.get("token")}` } },
       );
 

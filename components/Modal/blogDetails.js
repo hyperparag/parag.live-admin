@@ -122,7 +122,7 @@ const BlogDetails = ({ blog, setReload, reload, blogLoading }) => {
     }).then((result) => {
       if (result.isConfirmed) {
         axios
-          .delete(`https://paraglive-backend.vercel.app/api/blogs/${id}`, {
+          .delete(`  https://paraglive-backend.vercel.app/api/blogs/${id}`, {
             headers: { authorization: `Bearer ${token}` },
           })
           .then((response) => {
@@ -150,7 +150,7 @@ const BlogDetails = ({ blog, setReload, reload, blogLoading }) => {
         // are commented out in the backend env, so replacing a blog image
         // silently did nothing.
         const uploadRes = await fetch(
-          "https://paraglive-backend.vercel.app/api/files2/files",
+          "  https://paraglive-backend.vercel.app/api/files2/files",
           {
             method: "POST",
             body: formData,
@@ -171,7 +171,7 @@ const BlogDetails = ({ blog, setReload, reload, blogLoading }) => {
 
       // Send update request
       const res = await axios.patch(
-        `https://paraglive-backend.vercel.app/api/blogs/${blog?._id}`,
+        `  https://paraglive-backend.vercel.app/api/blogs/${blog?._id}`,
         data,
         {
           headers: {
@@ -215,7 +215,7 @@ const BlogDetails = ({ blog, setReload, reload, blogLoading }) => {
       if (!result.isConfirmed) return;
       axios
         .post(
-          `https://paraglive-backend.vercel.app/api/blogs/repost/${id}`,
+          `  https://paraglive-backend.vercel.app/api/blogs/repost/${id}`,
           {},
           { headers: { authorization: `Bearer ${token}` } },
         )

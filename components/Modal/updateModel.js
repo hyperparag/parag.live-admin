@@ -27,7 +27,7 @@ const UpdateModel = ({ data, token }) => {
 
     await axios
       .patch(
-        `https://paraglive-backend.vercel.app/api/users/address/${data?._id}`,
+        `  https://paraglive-backend.vercel.app/api/users/address/${data?._id}`,
         datas,
         options,
       )
