@@ -57,10 +57,10 @@ const defaultExpandable = {
         <div>
           <h6>
             <strong className='text-black fw-bold'>Status</strong> :{" "}
-            {record?.status == "false" ? (
-              <button className='bg-red-200 border-0 px-2'>Free</button>
-            ) : (
+            {record?.status === "true" ? (
               <button className='bg-green-200  border-0 px-2'>Paid</button>
+            ) : (
+              <button className='bg-red-200 border-0 px-2'>Free</button>
             )}
           </h6>
           <>
@@ -254,10 +254,12 @@ const ApprovedPosts = ({ setNewPost, datas }) => {
       width: 150,
       render: (_, { status }) => (
         <>
-          {status != "false" ? (
-            <button className='bg-red-200 border-0 px-2'>Free</button>
-          ) : (
+          {/* status is String(isPremium). This was inverted, so boosted
+              ads showed as Free and free ones as Paid. */}
+          {status === "true" ? (
             <button className='bg-green-200  border-0 px-2'>Paid</button>
+          ) : (
+            <button className='bg-red-200 border-0 px-2'>Free</button>
           )}
         </>
       ),

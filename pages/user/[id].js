@@ -146,10 +146,10 @@ const UserDashboard = () => {
       width: 150,
       render: (_, { status }) => (
         <>
-          {status == "false" ? (
-            <button className='bg-red-200 border-0 px-2'>Free</button>
-          ) : (
+          {status === "true" ? (
             <button className='bg-green-200  border-0 px-2'>Paid</button>
+          ) : (
+            <button className='bg-red-200 border-0 px-2'>Free</button>
           )}
         </>
       ),
@@ -164,7 +164,7 @@ const UserDashboard = () => {
       name: `${a.name}`,
       city: `${a?.city ? a?.city.length : a?.cities.length} city/cities`,
 
-      email: `${a?.category + ">" + a?.subCategory}`,
+      email: `${a?.subCategory}`,
       createdAt: `${
         new Date(a.createdAt).toLocaleDateString() +
         " " +
