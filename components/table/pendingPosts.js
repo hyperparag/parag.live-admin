@@ -90,6 +90,21 @@ const defaultExpandable = {
   ),
 };
 
+// Moderation reason codes from Backend/src/api/v1/utils/moderation.js.
+// Red: likely harmful, check before approving. Orange: spam / SEO quality.
+// Yellow: repeats.
+const REASON_BADGES = {
+  "banned-word": ["Flagged wording", "bg-red-200"],
+  "suspicious-link": ["Flagged link", "bg-red-200"],
+  "unsafe-html": ["Code / hidden markup", "bg-red-200"],
+  "too-many-links": ["Too many links", "bg-orange-200"],
+  "keyword-stuffing": ["Keyword stuffing", "bg-orange-200"],
+  "thin-content": ["Too short", "bg-orange-200"],
+  "posting-limit": ["Daily limit passed", "bg-orange-200"],
+  duplicate: ["Duplicate post", "bg-yellow-200"],
+  "cross-account-duplicate": ["Copied from another account", "bg-yellow-200"],
+};
+
 const ApprovedPosts = ({ setNewPost, datas }) => {
   const [bordered, setBordered] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -288,17 +303,19 @@ const ApprovedPosts = ({ setNewPost, datas }) => {
         if (!reason || reason === "undefined" || reason === "null") {
           return <span className='text-gray-600'>&mdash;</span>;
         }
-        const label =
-          reason === "duplicate"
-            ? "Duplicate post"
-            : reason === "banned-word"
-              ? "Flagged wording"
-              : reason === "suspicious-link"
-                ? "Flagged link"
-                : reason;
-        const colour =
-          reason === "duplicate" ? "bg-yellow-200" : "bg-orange-200";
-        return <span className={`${colour} px-2 py-1 rounded`}>{label}</span>;
+        // The server stores every rule an ad broke, comma-separated.
+        return (
+          <div className='flex flex-wrap gap-1'>
+            {reason.split(",").map((code) => {
+              const [label, colour] = REASON_BADGES[code] || [code, "bg-gray-200"];
+              return (
+                <span key={code} className={`${colour} px-2 py-1 rounded`}>
+                  {label}
+                </span>
+              );
+            })}
+          </div>
+        );
       },
     },
     {

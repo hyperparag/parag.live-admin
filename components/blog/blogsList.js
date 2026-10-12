@@ -68,13 +68,14 @@ const BlogsList = ({ setBlogId, reload, setBlogLoading }) => {
   const [keyword, setKeyWord] = useState("");
   const [reloads, setReload] = useState(false);
   const [current, setCurrent] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
   const usersStringfy = Cookies.get("token");
 
   async function getUser() {
     try {
       const response = await axios.get(
-        `  https://paraglive-backend.vercel.app/api/blogs/admin?page=${current}&q=${keyword}&cat=${category}`,
+        `  https://paraglive-backend.vercel.app/api/blogs/admin?page=${current}&q=${keyword}&cat=${category}&size=${pageSize}`,
         {
           method: "GET",
           headers: {
@@ -95,11 +96,14 @@ const BlogsList = ({ setBlogId, reload, setBlogLoading }) => {
   const onChange = (page) => {
     setCurrent(page);
   };
+  const onShowSizeChange = (current, pageSize) => {
+    setPageSize(pageSize);
+  };
 
   useEffect(() => {
     setLoading(true);
     getUser();
-  }, [current, category, keyword, reloads]);
+  }, [current, category, keyword, reloads, pageSize]);
 
   const deleteUser = (id) => {
     Swal.fire({
@@ -588,10 +592,12 @@ const BlogsList = ({ setBlogId, reload, setBlogLoading }) => {
       />
       <Pagination
         className='flex justify-center mt-10'
-        defaultCurrent={current}
-        pageSize={6}
+        current={current}
+        pageSize={pageSize}
         onChange={onChange}
-        showSizeChanger={false}
+        showSizeChanger
+        onShowSizeChange={onShowSizeChange}
+        defaultCurrent={1}
         total={newPosts?.page}
       />
     </div>
