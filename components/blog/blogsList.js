@@ -68,7 +68,7 @@ const BlogsList = ({ setBlogId, reload, setBlogLoading }) => {
   const [keyword, setKeyWord] = useState("");
   const [reloads, setReload] = useState(false);
   const [current, setCurrent] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(20);
 
   const usersStringfy = Cookies.get("token");
 
@@ -596,6 +596,7 @@ const BlogsList = ({ setBlogId, reload, setBlogLoading }) => {
         pageSize={pageSize}
         onChange={onChange}
         showSizeChanger
+        pageSizeOptions={[20, 50, 100]}
         onShowSizeChange={onShowSizeChange}
         defaultCurrent={1}
         total={newPosts?.page}
