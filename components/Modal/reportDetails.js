@@ -116,9 +116,7 @@ const ReportDetails = ({ report, reload, setReload }) => {
                 </p>
                 <p className='text-black text-xs mb-1'>
                   <span className='font-bold'> Category :</span>{" "}
-                  {report?.reportedPost?.[0]?.category +
-                    " > " +
-                    report?.reportedPost?.[0]?.subCategory}
+                  {report?.reportedPost?.[0]?.subCategory}
                 </p>
                 <p className='text-black text-xs mb-1'>
                   <span className='font-bold'> Description :</span>{" "}

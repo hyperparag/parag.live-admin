@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import style from "../../styles/moduleCss/postDetailsModal.module.css";
-import { AiOutlineRight } from "react-icons/ai";
 import Swal from "sweetalert2";
 import axios from "axios";
 import Cookies from "js-cookie";
@@ -158,7 +157,6 @@ const PostDetails = ({ id, setReload, reload }) => {
             <h3 className='text-lg text-black'>
               {" "}
               <span className='font-bold text-black'>Category : </span>{" "}
-              {data?.category} <AiOutlineRight className='inline' />{" "}
               {data?.subCategory}
             </h3>
             <p className='py-4 font-normal text-black'>
@@ -199,8 +197,13 @@ const PostDetails = ({ id, setReload, reload }) => {
             </p>
             <p className='mt-2 font-normal text-black'>
               <span className='font-bold text-black'> Location : </span>{" "}
-              {data?.owner?.[0]?.address?.city},{" "}
-              {data?.owner?.[0]?.address?.country}
+              {/* The location the poster typed on the ad; older ads have none,
+                  so fall back to the address on their profile. */}
+              {data?.location ||
+                [data?.owner?.[0]?.address?.city, data?.owner?.[0]?.address?.country]
+                  .filter(Boolean)
+                  .join(", ") ||
+                "—"}
             </p>
             <div className='modal-action'>
               <label
