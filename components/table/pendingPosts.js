@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { Button, Table, Dropdown, Space, Pagination } from "antd";
 import style from "../../styles/moduleCss/dashboard.module.css";
 import Cookies from "js-cookie";
-import jwt_decode from "jwt-decode";
 import axios from "axios";
 import categoryFilter from "../../public/category.json";
 import Swal from "sweetalert2";
