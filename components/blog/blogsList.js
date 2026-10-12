@@ -575,16 +575,19 @@ const BlogsList = ({ setBlogId, reload, setBlogLoading }) => {
         className={style.tableLG}
         columns={columns}
         dataSource={data}
+        // No fixed height: with y: 900 the table stayed the same size whatever
+        // the page size, so picking 50 or 100 looked like it did nothing.
         scroll={{
           x: 1500,
-          y: 900,
         }}
         pagination={false}
       />
       <Table
         rowSelection={rowSelection}
         {...tableProps}
-        pagination={{ pageSize: 5 }}
+        // The page size picker below drives paging; a second pager here showed
+        // 5 rows at a time on small screens regardless of the chosen limit.
+        pagination={false}
         columns={tableColumns}
         dataSource={hasData ? data : []}
         scroll={scroll}
