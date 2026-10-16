@@ -76,6 +76,7 @@ const AddBlog = () => {
 
   const [fileList, setFileList] = useState([]);
   const [scheduleLater, setScheduleLater] = useState(false);
+  const [errors, setErrors] = useState({});
 
   // const [desc, setDescription] = useState("");
   const editorRef = useRef(null);
@@ -109,7 +110,40 @@ const AddBlog = () => {
     setState({ ...state, [e.type]: e.payload });
   };
 
+  // Lowercase, hyphenated slug: the same shape the public blog URL needs.
+  // Applied on blur rather than every keystroke, so typing a space mid-title
+  // doesn't get eaten before the next word is typed.
+  const normalizeSlug = (value) =>
+    value
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "");
+
+  const handlePermalinkBlur = () => {
+    setState((prev) => ({ ...prev, permalink: normalizeSlug(prev.permalink) }));
+  };
+
+  const stripHtml = (html) => (html || "").replace(/<[^>]*>/g, "").trim();
+
+  const validate = () => {
+    const e = {};
+    if (!state.title.trim()) e.title = "Blog title is required";
+    if (!state.permalink.trim()) e.permalink = "Permalink is required";
+    if (!state.category) e.category = "Please select a category";
+    if (!stripHtml(state.desc)) e.desc = "Description is required";
+    return e;
+  };
+
   const submit = async () => {
+    const validationErrors = validate();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      message.error("Please fill all required fields");
+      return;
+    }
+    setErrors({});
+
     const data = { ...state };
     const user = jwt_decode(usersStringfy);
     setIsLoadingimgS(true);
@@ -191,6 +225,7 @@ const AddBlog = () => {
           permalink: "",
           metaKey: "",
         });
+        setErrors({});
       }
     })
       .catch(() => {
@@ -330,7 +365,7 @@ const AddBlog = () => {
         </div>
         <br />
         <label className='w-full'>
-          Blog Title : <br />
+          <span className='text-red-600'>*</span> Blog Title : <br />
           <input
             type='text'
             value={state.title}
@@ -344,14 +379,26 @@ const AddBlog = () => {
               })
             }
           />
+          <div className='flex justify-between mt-0.5'>
+            {errors.title && (
+              <p className='text-red-600 text-xs'>{errors.title}</p>
+            )}
+            <p
+              className={`text-xs ml-auto ${
+                state.title.length > 85 ? "text-red-600" : "text-gray-500"
+              }`}
+            >
+              {state.title.length}/100
+            </p>
+          </div>
         </label>
         <br />
-        <br />
         <label className=''>
-          Permalink : <br />
+          <span className='text-red-600'>*</span> Permalink : <br />
           <input
             type='text'
             value={state.permalink}
+            maxLength={100}
             placeholder='Permalinks'
             className='input input-bordered w-full bg-white border'
             onChange={(e) =>
@@ -360,15 +407,37 @@ const AddBlog = () => {
                 payload: e.target.value,
               })
             }
+            onBlur={handlePermalinkBlur}
           />
+          <div className='flex justify-between mt-0.5'>
+            {errors.permalink ? (
+              <p className='text-red-600 text-xs'>{errors.permalink}</p>
+            ) : (
+              <p className='text-xs text-gray-500'>
+                Only lowercase letters, numbers and hyphens are kept
+                automatically &mdash; no spaces.
+              </p>
+            )}
+            <p
+              className={`text-xs ml-auto ${
+                state.permalink.length > 85 ? "text-red-600" : "text-gray-500"
+              }`}
+            >
+              {state.permalink.length}/100
+            </p>
+          </div>
         </label>
         <br />
-        <br />
         <label className=''>
-          Meta Description : <br />
+          Meta Description :{" "}
+          <span className='font-normal text-xs text-gray-500'>
+            (optional)
+          </span>
+          <br />
           <input
             type='text'
             value={state.metaDesc}
+            maxLength={160}
             placeholder='Meta Description'
             className='input input-bordered w-full bg-white border'
             onChange={(e) =>
@@ -378,14 +447,25 @@ const AddBlog = () => {
               })
             }
           />
+          <p
+            className={`text-xs text-right mt-0.5 ${
+              state.metaDesc.length > 140 ? "text-red-600" : "text-gray-500"
+            }`}
+          >
+            {state.metaDesc.length}/160
+          </p>
         </label>
         <br />
-        <br />
         <label className=''>
-          Meta Keyword : <br />
+          Meta Keyword :{" "}
+          <span className='font-normal text-xs text-gray-500'>
+            (optional)
+          </span>
+          <br />
           <input
             type='text'
             value={state.metaKey}
+            maxLength={255}
             placeholder='Keyword'
             className='input input-bordered w-full bg-white border'
             onChange={(e) =>
@@ -395,11 +475,21 @@ const AddBlog = () => {
               })
             }
           />
+          <p
+            className={`text-xs text-right mt-0.5 ${
+              state.metaKey.length > 220 ? "text-red-600" : "text-gray-500"
+            }`}
+          >
+            {state.metaKey.length}/255
+          </p>
         </label>
         <br />
-        <br />
         <label className=''>
-          Image Alt Text : <br />
+          Image Alt Text :{" "}
+          <span className='font-normal text-xs text-gray-500'>
+            (optional)
+          </span>
+          <br />
           <input
             type='text'
             value={state.altText}
@@ -413,11 +503,17 @@ const AddBlog = () => {
               })
             }
           />
+          <p
+            className={`text-xs text-right mt-0.5 ${
+              state.altText.length > 130 ? "text-red-600" : "text-gray-500"
+            }`}
+          >
+            {state.altText.length}/150
+          </p>
         </label>
         <br />
-        <br />
         <label>
-          Category : <br />
+          <span className='text-red-600'>*</span> Category : <br />
           <select
             value={state.category}
             className='p-3 bg-white border w-full rounded'
@@ -428,15 +524,18 @@ const AddBlog = () => {
               })
             }
           >
-            <option>--Select Category--</option>
+            <option value=''>--Select Category--</option>
             {state.country?.map((a) => (
               <option value={a.name}>{a.name}</option>
             ))}
           </select>
+          {errors.category && (
+            <p className='text-red-600 text-xs mt-0.5'>{errors.category}</p>
+          )}
         </label>
         <br /> <br />
         <label>
-          Description : <br />
+          <span className='text-red-600'>*</span> Description : <br />
           <ReactQuill
             theme='snow'
             value={state.desc}
@@ -450,6 +549,14 @@ const AddBlog = () => {
               })
             }
           />
+          <div className='flex justify-between mt-0.5'>
+            {errors.desc && (
+              <p className='text-red-600 text-xs'>{errors.desc}</p>
+            )}
+            <p className='text-xs text-gray-500 ml-auto'>
+              {stripHtml(state.desc).length} characters
+            </p>
+          </div>
         </label>
         <div className='mt-4 mb-4'>
           <p className='mb-1'>Schedule Post :</p>

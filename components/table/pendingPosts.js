@@ -123,7 +123,7 @@ const ApprovedPosts = ({ setNewPost, datas }) => {
   const [postCategory, setCategory] = useState("");
   const [postSubCategory, setSubCategory] = useState("");
   const [filtredCount, setFiltredCount] = useState();
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize] = useState(10);
 
   const usersStringfy = Cookies.get("token");
 
@@ -395,11 +395,6 @@ const ApprovedPosts = ({ setNewPost, datas }) => {
     setCurrent(page);
   };
 
-  const onShowSizeChange = (current, pageSize) => {
-    setCurrent(current);
-    setPageSize(pageSize);
-  };
-
   const data = [];
   const datr = posts?.map((a) =>
     data.push({
@@ -589,8 +584,8 @@ const ApprovedPosts = ({ setNewPost, datas }) => {
         <Pagination
           className='block flex justify-center mt-5'
           current={current}
-          showSizeChanger
-          onShowSizeChange={onShowSizeChange}
+          onChange={onChange}
+          showSizeChanger={false}
           defaultCurrent={1}
           pageSize={pageSize}
           total={filtredCount}

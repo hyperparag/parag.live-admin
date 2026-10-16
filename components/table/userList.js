@@ -87,7 +87,7 @@ const UserList = ({ setnewUser, datas }) => {
   const [xScroll, setXScroll] = useState(undefined);
   const [users, setUser] = useState([]);
   const [keyword, setKeyword] = useState("");
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize] = useState(10);
   const [page, setPage] = useState(1);
   const [startIndex, setIndex] = useState(1);
 
@@ -382,9 +382,6 @@ const UserList = ({ setnewUser, datas }) => {
   const onChange = (page) => {
     setPage(page);
   };
-  const onShowSizeChange = (current, pageSize) => {
-    setPageSize(pageSize);
-  };
 
   return (
     <div className='w-full'>
@@ -469,8 +466,7 @@ const UserList = ({ setnewUser, datas }) => {
           className='block flex justify-center mt-5'
           current={page}
           onChange={onChange}
-          showSizeChanger
-          onShowSizeChange={onShowSizeChange}
+          showSizeChanger={false}
           defaultCurrent={1}
           total={datas?.allUsers}
         />

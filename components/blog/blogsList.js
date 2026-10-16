@@ -68,7 +68,7 @@ const BlogsList = ({ setBlogId, reload, setBlogLoading }) => {
   const [keyword, setKeyWord] = useState("");
   const [reloads, setReload] = useState(false);
   const [current, setCurrent] = useState(1);
-  const [pageSize, setPageSize] = useState(20);
+  const [pageSize] = useState(20);
 
   const usersStringfy = Cookies.get("token");
 
@@ -95,9 +95,6 @@ const BlogsList = ({ setBlogId, reload, setBlogLoading }) => {
 
   const onChange = (page) => {
     setCurrent(page);
-  };
-  const onShowSizeChange = (current, pageSize) => {
-    setPageSize(pageSize);
   };
 
   useEffect(() => {
@@ -598,9 +595,7 @@ const BlogsList = ({ setBlogId, reload, setBlogLoading }) => {
         current={current}
         pageSize={pageSize}
         onChange={onChange}
-        showSizeChanger
-        pageSizeOptions={[20, 50, 100]}
-        onShowSizeChange={onShowSizeChange}
+        showSizeChanger={false}
         defaultCurrent={1}
         total={newPosts?.page}
       />
