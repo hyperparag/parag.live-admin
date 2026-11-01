@@ -377,6 +377,10 @@ const UserList = ({ setnewUser, datas }) => {
     showHeader,
     scroll,
     tableLayout,
+    // Paging is server-side (the <Pagination> below). Without this antd adds
+    // its own pager that only sees the rows already loaded, so mobile showed a
+    // second, dead "< 1 >" control above the real one.
+    pagination: false,
   };
 
   const onChange = (page) => {
